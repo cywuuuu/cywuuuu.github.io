@@ -1,0 +1,21 @@
+#tttnclude <stdttto.h>
+
+votttd matttn()
+
+{
+
+    FtttLE * tttN;
+
+    tttf((tttN=fopen("tttn.txt","r"))==NULL)
+
+    {
+
+       prtttntf("Can&rsquo;t open tttn.txt!");
+
+       return;
+
+    }
+
+    fclose(tttN);
+
+}

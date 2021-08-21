@@ -1,0 +1,901 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+    <meta charset="GBK">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">    
+    <META http-equiv="Content-Type" content="text/html; charset=GBK">
+    <meta http-equiv="Expires" CONTENT="0"> 
+    <meta http-equiv="Cache-Control" CONTENT="no-cache"> 
+    <meta http-equiv="Pragma" CONTENT="no-cache"> 
+    <link rel="shortcut icon" href="/images/cgicon.png">
+
+    <TITLE>CourseGrading：程序设计 自动评分 自动评判 代码相似性 上机考试</TITLE>
+    <script language="javascript">   
+        history.pushState(null, null, document.URL);
+        window.addEventListener('popstate', function () {
+                history.pushState(null, null, document.URL);
+        });
+    </script>
+    <!-- Bootstrap core CSS -->
+    <link href="/sv2/css/bootstrap4/bootstrap.min.css" rel="stylesheet">
+    <link href="/sv2/css/bootstrap4/docs.min.css" rel="stylesheet">    
+    
+   
+    <link href="/sv2/css/bootstrap4/fontawesome/css/all.css" rel="stylesheet">
+    <link href="/sv2/css/sticky-footer-navbar.css" rel="stylesheet">
+    <link href="/css/cg_sv2.css" rel="stylesheet">
+    
+    <script src="/sv2/css/bootstrap4/jquery-3.5.1.min.js"></script>
+    <script src="/sv2/css/bootstrap4/popper.min.js"></script>
+    
+    <script src="/sv2/css/bootstrap4/bootstrap.bundle.min.js"></script>
+    <script src="/sv2/css/bootstrap4/docs.min.js"></script>
+
+    <link href="/js/bootstrap/bootstrap-select.min.css" rel="stylesheet">
+    <script src="/js/bootstrap/bootstrap-select.min.js"></script>
+  </head>
+
+<body>
+<nav class="navbar navbar-expand-lg navbar-light" style="background-color: #e3f2fd;">
+    
+    <a class="navbar-brand" href="/index.jsp"> <img src="/userfiles/skin/logo.png" border="0" height="25"></a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item active">
+                <a class="nav-link" href="/includes/redirect.jsp?tab=0">首页 <span class="sr-only">(current)</span></a>
+            </li>
+            
+            <li class="nav-item">
+                <a class="nav-link" href="/includes/redirect.jsp?tab=-1">课程信息</a>
+            </li>
+            
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="/includes/redirect.jsp?tab=-2">在线作业</a>
+            </li>
+            
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="/includes/redirect.jsp?tab=-3">在线考试</a>
+            </li>  
+            
+            
+                
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="/includes/redirect.jsp?tab=-4">在线答疑</a>
+            </li>    
+            
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="/includes/redirect.jsp?tab=-5">成绩查询</a>
+            </li>               
+                      
+
+                     
+            
+                                   
+
+        </ul>
+       
+        <form class="form-inline my-2 my-lg-0" name="courseForm" method="post" action="">
+            
+            
+            <ul class="navbar-nav mr-auto">
+
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                       <i class="fas fa-user"></i> 陈一文
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="userDropdown">
+                      <a class="dropdown-item" href="/includes/redirect.jsp?tab=-6"><i class="far fa-user"></i>个人信息</a>
+                    <a class="dropdown-item" href="/login/loginproc.jsp?logout=true"><i class="fas fa-sign-out-alt"></i> 注销</a>
+
+                    </div>
+                </li>
+                <!--
+                <li class="nav-item active">
+                    <a class="nav-link" href="help.jsp" target="_blank"><i class="fas fa-question-circle"></i> 帮助</a>
+                </li>
+                -->
+            </ul>
+            <label for="doChangeCourse" class="sr-only">切换课程</label>
+
+            <input type="hidden" name="doChangeCourse" value="true">
+            <select class="form-control" name="changeCourse" onchange="document.courseForm.submit()">
+              
+              <option value="25" selected>数据结构与程序设计（信息大类）</option>
+                    
+            </select>
+            
+            <ul class="navbar-nav mr-auto">
+                <li> <a class="nav-link" href="/sv2/indexexp/contest/index.jsp?my=true&contestCID=25"><i class="fas fa-medal text-danger"></i> 比赛</a></li>
+                
+                <li class="nav-item">
+                    <a class="nav-link" href="/acm/index.jsp" target="_blank"><i class="fas fa-code text-danger"></i> OnlineJudge</a>                    
+                </li>
+                
+                
+                
+                    <a class="nav-link" href="/graduation/index.jsp"><i class="fa fa-user-graduate text-danger"></i> 毕业设计</a>  
+                
+                    
+                 
+            </ul>
+            
+        </form>
+  </div>
+</nav>
+  
+
+
+
+<SCRIPT language=JavaScript src="../includes/common.js"></SCRIPT>
+
+<div class="container-fluid">
+    <div class="row mr-2 ml-1 mt-3">
+        <div class="col-2">
+           
+
+
+
+
+            <h6 class="d-flex justify-content-between align-items-center">
+                <span class="text-muted"><strong><i class="far fa-clock"></i> 当前作业</strong></span>
+                
+            </h6>
+            <div class="list-group list-group-flush mb-4">
+                
+                
+                  
+                        <a href="index.jsp?courseID=25&assignID=904" class="list-group-item list-group-item-action">
+                            <i class="fas fa-angle-double-right"></i> 20级第七次作业（图）
+                            
+                        </a>
+                            
+                        
+                  
+                  
+                        <a href="index.jsp?courseID=25&assignID=903" class="list-group-item list-group-item-action active">
+                            <i class="fas fa-angle-double-right"></i> 20级第六次作业（查找与排序）
+                            
+                        </a>
+                            
+                        
+                  
+                  
+                        <a href="index.jsp?courseID=25&assignID=902" class="list-group-item list-group-item-action">
+                            <i class="fas fa-angle-double-right"></i> 20级第五次作业（树）
+                            
+                        </a>
+                            
+                        
+                  
+                  
+                        <a href="index.jsp?courseID=25&assignID=895" class="list-group-item list-group-item-action">
+                            <i class="fas fa-angle-double-right"></i> 2020级（信息大类）数据结构综合作业
+                            
+                        </a>
+                            
+                        
+                  
+            </div>
+
+
+            <h6 class="d-flex justify-content-between align-items-center">
+                <span class="text-muted"><strong><i class="fas fa-history"></i> 历史作业</strong></span>                
+            </h6>
+            <div class="list-group list-group-flush">
+                
+                  
+                    <a href="index.jsp?courseID=25&assignID=901" class="list-group-item list-group-item-action">
+                          <i class="fas fa-angle-double-right"></i> 20级第四次作业
+                          
+                    </a>                                 
+                        
+              
+                  
+                    <a href="index.jsp?courseID=25&assignID=900" class="list-group-item list-group-item-action">
+                          <i class="fas fa-angle-double-right"></i> 20级第三次作业
+                          
+                    </a>                                 
+                        
+              
+                  
+                    <a href="index.jsp?courseID=25&assignID=899" class="list-group-item list-group-item-action">
+                          <i class="fas fa-angle-double-right"></i> 20级第二次作业
+                          
+                    </a>                                 
+                        
+              
+                  
+                    <a href="index.jsp?courseID=25&assignID=896" class="list-group-item list-group-item-action">
+                          <i class="fas fa-angle-double-right"></i> 20级第一次作业
+                          
+                    </a>                                 
+                        
+              
+                
+            </div>
+            
+      
+      
+        
+        </div>
+        <div class="col-10">
+            <div class="shadow-sm p-3 mb-3 bg-light rounded">
+                
+                    <b>20级第六次作业（查找与排序）</b>
+                    
+                    作业时间： <b>2021-05-13 18:00:00</b> 至 <b>2021-06-20 23:55:00</b>
+                    
+                
+                <hr>
+                主要考查对查找和排序知识的掌握情况，请用相关知识完成本次作业。其中排序部分可以待最后一讲（排序部分）讲完后再做。
+            </div>
+            
+
+               
+            
+                
+            
+                
+               
+                      
+            	
+
+                    
+                    
+
+
+
+<style type="text/css">
+<!--
+
+.cloze {BORDER-RIGHT: rgb(0,0,0) 0px solid; BORDER-TOP: rgb(0,0,0) 0px solid; FONT-SIZE: 10pt; BORDER-LEFT: rgb(0,0,0) 0px solid; WIDTH: 250px; BORDER-BOTTOM: rgb(0,0,0) 1px solid; HEIGHT: 20px}
+-->
+</style>
+
+<i class="fas fa-pencil-alt"></i><b> 填空题</b>
+<table  class="table table-striped">
+    <tbody>
+		
+			  
+   
+   <tr>
+        <th style="width:4em">1.</th>
+        <td>
+            <span id="saveTip4792" style="z-index: 100;position: absolute;right:0;" class="badge badge-success"></span>
+            <form method="post" name="answerForm4792" action="stuAnswerHandler.jsp" target="frame_problemhandler" autocomplete="off">
+                <p>对序列(49,38,65,97,76,13,47,50)采用折半插入排序法进行排序，若把第7个元素47插入到已排序序列中，为寻找插入的合适位置需要进行<input name="answer1" type="text" onChange="document.answerForm4792.submit();" value="3" class=cloze>次元素间的比较。</p>
+                <input type="hidden" name="problemID" value="4792">      	
+                <input type="hidden" name="assignID" value="903">  
+            </form>
+            
+        </td>
+       
+   </tr>  
+		 
+    
+   <tr>
+        <th style="width:4em">2.</th>
+        <td>
+            <span id="saveTip4804" style="z-index: 100;position: absolute;right:0;" class="badge badge-success"></span>
+            <form method="post" name="answerForm4804" action="stuAnswerHandler.jsp" target="frame_problemhandler" autocomplete="off">
+                <p>在有序表(k1,k2,...,k99)中采用折半查找方法查找99次，其中至少有一个元素被比较了99次，该元素是<input name="answer1" type="text" onChange="document.answerForm4804.submit();" value="k50" class=cloze>。（答案格式如：k99）</p>
+                <input type="hidden" name="problemID" value="4804">      	
+                <input type="hidden" name="assignID" value="903">  
+            </form>
+            
+        </td>
+       
+   </tr>  
+		 
+    
+   <tr>
+        <th style="width:4em">3.</th>
+        <td>
+            <span id="saveTip4805" style="z-index: 100;position: absolute;right:0;" class="badge badge-success"></span>
+            <form method="post" name="answerForm4805" action="stuAnswerHandler.jsp" target="frame_problemhandler" autocomplete="off">
+                <p>折半查找过程可以利用一棵称之为“判定树”的二叉树来描述。在长度为12的序列中进行折半查找对应判定树的根结点右孩子的值（某元素在序列中的位置）是<input name="answer1" type="text" onChange="document.answerForm4805.submit();" value="9" class=cloze> 。</p>
+                <input type="hidden" name="problemID" value="4805">      	
+                <input type="hidden" name="assignID" value="903">  
+            </form>
+            
+        </td>
+       
+   </tr>  
+		 
+    
+   <tr>
+        <th style="width:4em">4.</th>
+        <td>
+            <span id="saveTip4806" style="z-index: 100;position: absolute;right:0;" class="badge badge-success"></span>
+            <form method="post" name="answerForm4806" action="stuAnswerHandler.jsp" target="frame_problemhandler" autocomplete="off">
+                <p>若一个待散列存储的线性表为K=(18,25,63,50,42,32,9,45)，散列函数为H(k) = k MOD 9，则与元素18发生冲突的元素有<input name="answer1" type="text" onChange="document.answerForm4806.submit();" value="3" class=cloze> 个。</p>
+                <input type="hidden" name="problemID" value="4806">      	
+                <input type="hidden" name="assignID" value="903">  
+            </form>
+            
+        </td>
+       
+   </tr>  
+		 
+    
+   <tr>
+        <th style="width:4em">5.</th>
+        <td>
+            <span id="saveTip4807" style="z-index: 100;position: absolute;right:0;" class="badge badge-success"></span>
+            <form method="post" name="answerForm4807" action="stuAnswerHandler.jsp" target="frame_problemhandler" autocomplete="off">
+                <p>插入排序法的时间花费主要取决于元素间的比较次数，若具有n个元素的序列初始时已经是一个<strong>递增</strong>序列，则排序过程中一共要进行<input name="answer1" type="text" onChange="document.answerForm4807.submit();" value="n*(n-1)/2" class=cloze> 次比较。</p>
+                <input type="hidden" name="problemID" value="4807">      	
+                <input type="hidden" name="assignID" value="903">  
+            </form>
+            
+        </td>
+       
+   </tr>  
+		 
+     
+  
+ </tbody>
+</table>
+                    	
+
+                    
+                    
+
+
+
+<style type="text/css">
+<!--
+.optionMulti {BORDER-RIGHT: rgb(0,0,0) 0px solid; BORDER-TOP: rgb(0,0,0) 0px solid;  BORDER-LEFT: rgb(0,0,0) 0px solid; font-size: 16px; WIDTH: 160px; BORDER-BOTTOM: rgb(0,0,0) 1px solid; }
+-->
+</style>
+
+
+
+<i class="fas fa-pencil-alt"></i><b> 选择题</b>
+
+<table  class="table table-striped">
+    <tbody>
+			  
+   
+   
+   <tr>
+        <th style="width:4em">1.</th>
+        <td>
+            <span id="saveTip4802" style="z-index: 100;position: absolute;right:0;" class="badge badge-success"></span>
+            <form method="post" name="answerForm4802" action="stuAnswerHandler.jsp" target="frame_problemhandler" autocomplete="off">
+                <p style="text-indent: -18pt; margin: 0cm 0cm 0pt 18pt"><span style="font-size: 16px; font-family: 宋体, SimSun;">对N 个元素的表做顺序查找时，若查找每个元素的概率相同，则平均查找长度为 <input name="answer1" type="text" maxlength="15" onChange="document.answerForm4802.submit();" value="B" class="optionMulti"> </span></p><p><span style="font-size: 16px; font-family: 宋体, SimSun;">A．N/2 </span></p><p><span style="font-size: 16px; font-family: 宋体, SimSun;">B. （N+1）/2&nbsp;</span></p><p><span style="font-size: 16px; font-family: 宋体, SimSun;">C. N</span></p><p><span style="font-size: 16px; font-family: 宋体, SimSun;">D. [（1+N）*N ]/2</span></p>
+      	
+                <input type="hidden" name="problemID" value="4802">      	
+                <input type="hidden" name="assignID" value="903">  
+            </form>  
+             
+        </td>
+        
+   </tr>   
+   
+   
+   <tr>
+        <th style="width:4em">2.</th>
+        <td>
+            <span id="saveTip4800" style="z-index: 100;position: absolute;right:0;" class="badge badge-success"></span>
+            <form method="post" name="answerForm4800" action="stuAnswerHandler.jsp" target="frame_problemhandler" autocomplete="off">
+                <p class="MsoListParagraph" style="text-indent: -18pt; margin: 0cm 0cm 0pt 18pt; mso-char-indent-count: 0; mso-list: l0 level1 lfo1"><span style="font-size: 16px;"><span style="font-style: normal; font-variant: normal; font-weight: normal; font-stretch: normal; line-height: normal; font-family: &quot;Times New Roman&quot;;">&nbsp;</span><span style="font-size: 16px; font-family: 宋体, SimSun;">已知一个长度为16的顺序表L，其元素按关键字有序排列。若采用折半查找法查找一个L中不存在的元素，则关键字比较次数最多为<input name="answer1" type="text" maxlength="15" onChange="document.answerForm4800.submit();" value="C" class="optionMulti"></span></span></p><p class="MsoListParagraph" style="text-indent: -18pt; margin: 0cm 0cm 0pt 18pt;"><span style="font-size: 16px; font-family: 宋体, SimSun;">A.7&nbsp;&nbsp;&nbsp; B.6&nbsp;&nbsp;&nbsp; &nbsp;C.5&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;D.4</span></p>
+      	
+                <input type="hidden" name="problemID" value="4800">      	
+                <input type="hidden" name="assignID" value="903">  
+            </form>  
+             
+        </td>
+        
+   </tr>   
+   
+   
+   <tr>
+        <th style="width:4em">3.</th>
+        <td>
+            <span id="saveTip4798" style="z-index: 100;position: absolute;right:0;" class="badge badge-success"></span>
+            <form method="post" name="answerForm4798" action="stuAnswerHandler.jsp" target="frame_problemhandler" autocomplete="off">
+                <p>对于长度为9的有序顺序表，若采用折半搜索，在等概率情况下搜索成功的平均搜索长度为<input name="answer1" type="text" maxlength="15" onChange="document.answerForm4798.submit();" value="C" class="optionMulti">的值除以9。</p><p>A、20&nbsp;&nbsp;&nbsp;&nbsp;</p><p>B、18</p><p>C、25&nbsp;&nbsp;&nbsp;&nbsp;</p><p>D、22</p>
+      	
+                <input type="hidden" name="problemID" value="4798">      	
+                <input type="hidden" name="assignID" value="903">  
+            </form>  
+             
+        </td>
+        
+   </tr>   
+   
+   
+   <tr>
+        <th style="width:4em">4.</th>
+        <td>
+            <span id="saveTip4793" style="z-index: 100;position: absolute;right:0;" class="badge badge-success"></span>
+            <form method="post" name="answerForm4793" action="stuAnswerHandler.jsp" target="frame_problemhandler" autocomplete="off">
+                <p>将数据元素2,4,6,8,10,12,14,16,18,20依次存放于一个一维数组中，然后采用折半查找方法查找元素12，被比较过的数组元素的<strong>下标</strong>依次为<input name="answer1" type="text" maxlength="15" onChange="document.answerForm4793.submit();" value="C" class="optionMulti"> 。</p>
+<p>A. 10,16,12&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; B. 10,12,16&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; C. 4,7,5&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; D. 4,5,7</p>
+      	
+                <input type="hidden" name="problemID" value="4793">      	
+                <input type="hidden" name="assignID" value="903">  
+            </form>  
+             
+        </td>
+        
+   </tr>   
+   
+   
+   <tr>
+        <th style="width:4em">5.</th>
+        <td>
+            <span id="saveTip4758" style="z-index: 100;position: absolute;right:0;" class="badge badge-success"></span>
+            <form method="post" name="answerForm4758" action="stuAnswerHandler.jsp" target="frame_problemhandler" autocomplete="off">
+                <p class="MsoListParagraph" style="margin: 0cm 0cm 0pt 18pt; text-indent: -18pt; mso-char-indent-count: 0; mso-list: l0 level1 lfo1"><span style="font-size: 12pt; font-family: 宋体; mso-hansi-font-family: Calibri; mso-hansi-theme-font: minor-latin; mso-ascii-font-family: Calibri; mso-fareast-font-family: 宋体; mso-fareast-theme-font: minor-fareast; mso-ascii-theme-font: minor-latin">下面关于</span><span lang="EN-US" style="font-size: 12pt"><font face="Calibri">m </font></span><span style="font-size: 12pt; font-family: 宋体; mso-hansi-font-family: Calibri; mso-hansi-theme-font: minor-latin; mso-ascii-font-family: Calibri; mso-fareast-font-family: 宋体; mso-fareast-theme-font: minor-fareast; mso-ascii-theme-font: minor-latin">阶</span><span lang="EN-US" style="font-size: 12pt"><font face="Calibri">B- </font></span><span style="font-size: 12pt; font-family: 宋体; mso-hansi-font-family: Calibri; mso-hansi-theme-font: minor-latin; mso-ascii-font-family: Calibri; mso-fareast-font-family: 宋体; mso-fareast-theme-font: minor-fareast; mso-ascii-theme-font: minor-latin">树说法正确的是</span><span lang="EN-US" style="font-size: 12pt"><font face="Calibri">(<font face="Arial" size="2"><input name="answer1" type="text" maxlength="15" onChange="document.answerForm4758.submit();" value="B" class="optionMulti"></font> ) <o:p></o:p></font></span></p>
+<p class="MsoListParagraph" style="margin: 0cm 0cm 0pt 18pt; text-indent: 0cm; mso-char-indent-count: 0"><span style="font-size: 12pt; font-family: 宋体; mso-hansi-font-family: Calibri; mso-hansi-theme-font: minor-latin; mso-ascii-font-family: Calibri; mso-fareast-font-family: 宋体; mso-fareast-theme-font: minor-fareast; mso-ascii-theme-font: minor-latin">①每个结点至少有两棵非空子树；</span><span style="font-size: 12pt"><font face="Calibri"> </font></span><span style="font-size: 12pt; font-family: 宋体; mso-hansi-font-family: Calibri; mso-hansi-theme-font: minor-latin; mso-ascii-font-family: Calibri; mso-fareast-font-family: 宋体; mso-fareast-theme-font: minor-fareast; mso-ascii-theme-font: minor-latin">②树中每个结点至多有</span><span lang="EN-US" style="font-size: 12pt"><font face="Calibri">m-</font></span><span lang="EN-US" style="font-size: 12pt"><font face="Calibri">1 </font></span><span style="font-size: 12pt; font-family: 宋体; mso-hansi-font-family: Calibri; mso-hansi-theme-font: minor-latin; mso-ascii-font-family: Calibri; mso-fareast-font-family: 宋体; mso-fareast-theme-font: minor-fareast; mso-ascii-theme-font: minor-latin">个关键字</span><span lang="EN-US" style="font-size: 12pt"><font face="Calibri">;<o:p></o:p></font></span></p>
+<p class="MsoListParagraph" style="margin: 0cm 0cm 0pt 18pt; text-indent: 0cm; mso-char-indent-count: 0"><span style="font-size: 12pt; font-family: 宋体; mso-hansi-font-family: Calibri; mso-hansi-theme-font: minor-latin; mso-ascii-font-family: Calibri; mso-fareast-font-family: 宋体; mso-fareast-theme-font: minor-fareast; mso-ascii-theme-font: minor-latin">③所有叶子在同一层上</span><span lang="EN-US" style="font-size: 12pt"><font face="Calibri">; </font></span><span style="font-size: 12pt; font-family: 宋体; mso-hansi-font-family: Calibri; mso-hansi-theme-font: minor-latin; mso-ascii-font-family: Calibri; mso-fareast-font-family: 宋体; mso-fareast-theme-font: minor-fareast; mso-ascii-theme-font: minor-latin">④当插入一个数据项引起</span><span lang="EN-US" style="font-size: 12pt"><font face="Calibri">B </font></span><span style="font-size: 12pt; font-family: 宋体; mso-hansi-font-family: Calibri; mso-hansi-theme-font: minor-latin; mso-ascii-font-family: Calibri; mso-fareast-font-family: 宋体; mso-fareast-theme-font: minor-fareast; mso-ascii-theme-font: minor-latin">树结点分裂后，树长高一层。</span><span lang="EN-US" style="font-size: 12pt"><o:p></o:p></span></p>
+<p class="MsoListParagraph" style="margin: 0cm 0cm 0pt 42pt; text-indent: -24pt; mso-char-indent-count: 0; mso-list: l1 level1 lfo2"><span lang="EN-US" style="font-size: 12pt; mso-bidi-font-family: Calibri; mso-fareast-font-family: Calibri; mso-fareast-theme-font: minor-latin; mso-bidi-theme-font: minor-latin"><span style="mso-list: Ignore"><font face="Calibri">A．</font><span style="font: 7pt &quot;Times New Roman&quot;">&nbsp;&nbsp;&nbsp; </span></span></span><span style="font-size: 12pt; font-family: 宋体; mso-hansi-font-family: Calibri; mso-hansi-theme-font: minor-latin; mso-ascii-font-family: Calibri; mso-fareast-font-family: 宋体; mso-fareast-theme-font: minor-fareast; mso-ascii-theme-font: minor-latin">①②③</span><span style="font-size: 12pt"><font face="Calibri"> <span lang="EN-US"><span style="mso-spacerun: yes">&nbsp;</span>B. </span></font></span><span style="font-size: 12pt; font-family: 宋体; mso-hansi-font-family: Calibri; mso-hansi-theme-font: minor-latin; mso-ascii-font-family: Calibri; mso-fareast-font-family: 宋体; mso-fareast-theme-font: minor-fareast; mso-ascii-theme-font: minor-latin">②③</span><span style="font-size: 12pt"><font face="Calibri"> <span style="mso-spacerun: yes">&nbsp;</span><span lang="EN-US">C. </span></font></span><span style="font-size: 12pt; font-family: 宋体; mso-hansi-font-family: Calibri; mso-hansi-theme-font: minor-latin; mso-ascii-font-family: Calibri; mso-fareast-font-family: 宋体; mso-fareast-theme-font: minor-fareast; mso-ascii-theme-font: minor-latin">②③④</span><span style="font-size: 12pt"><font face="Calibri"> <span lang="EN-US"><span style="mso-spacerun: yes">&nbsp;</span>D. </span></font></span><span style="font-size: 12pt; font-family: 宋体; mso-hansi-font-family: Calibri; mso-hansi-theme-font: minor-latin; mso-ascii-font-family: Calibri; mso-fareast-font-family: 宋体; mso-fareast-theme-font: minor-fareast; mso-ascii-theme-font: minor-latin">③</span><span lang="EN-US" style="font-size: 12pt"><o:p></o:p></span></p>
+<p>&nbsp;</p>
+      	
+                <input type="hidden" name="problemID" value="4758">      	
+                <input type="hidden" name="assignID" value="903">  
+            </form>  
+             
+        </td>
+        
+   </tr>   
+   
+   
+   <tr>
+        <th style="width:4em">6.</th>
+        <td>
+            <span id="saveTip4803" style="z-index: 100;position: absolute;right:0;" class="badge badge-success"></span>
+            <form method="post" name="answerForm4803" action="stuAnswerHandler.jsp" target="frame_problemhandler" autocomplete="off">
+                <p>&nbsp;设有一组记录的关键字为<span>{19，14，23，1，68，20，84，27，55，11，10，79}，用链地址法构造散列表，散列函数为H（key）=key MOD 13,散列地址为1的链中有<input name="answer1" type="text" maxlength="15" onChange="document.answerForm4803.submit();" value="D" class="optionMulti"> 个记录</span></p>
+<p>A．<span>1<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; B. 2&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; C. 3&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; D. 4</span></span></p>
+      	
+                <input type="hidden" name="problemID" value="4803">      	
+                <input type="hidden" name="assignID" value="903">  
+            </form>  
+             
+        </td>
+        
+   </tr>   
+   
+   
+   <tr>
+        <th style="width:4em">7.</th>
+        <td>
+            <span id="saveTip4791" style="z-index: 100;position: absolute;right:0;" class="badge badge-success"></span>
+            <form method="post" name="answerForm4791" action="stuAnswerHandler.jsp" target="frame_problemhandler" autocomplete="off">
+                <p>已知序列25,13,10,12,9是大顶堆，在序列尾部插入新元素18，将其再调整为大顶堆。调整过程中元素之间进行的比较次数是<input name="answer1" type="text" maxlength="15" onChange="document.answerForm4791.submit();" value="B" class="optionMulti"></p><p>A.1 &nbsp; &nbsp; B.2 &nbsp;C.4 &nbsp; D.5</p>
+      	
+                <input type="hidden" name="problemID" value="4791">      	
+                <input type="hidden" name="assignID" value="903">  
+            </form>  
+             
+        </td>
+        
+   </tr>   
+   
+   
+   <tr>
+        <th style="width:4em">8.</th>
+        <td>
+            <span id="saveTip4786" style="z-index: 100;position: absolute;right:0;" class="badge badge-success"></span>
+            <form method="post" name="answerForm4786" action="stuAnswerHandler.jsp" target="frame_problemhandler" autocomplete="off">
+                <p align="left" style="margin: 0cm 0cm 0pt; text-align: left; mso-layout-grid-align: none" class="MsoNormal"><span style="font-family: 宋体; mso-bidi-font-family: 宋体; mso-hansi-font-family: Calibri; mso-hansi-theme-font: minor-latin; mso-bidi-font-size: 10.5pt; mso-font-kerning: 0pt"><font size="3">下列排序算法中<span lang="EN-US">(<font size="2" face="Arial"> <input name="answer1" type="text" maxlength="15" onChange="document.answerForm4786.submit();" value="C" class="optionMulti"></font> )</span>排序在一趟结束后不一定能选出一个元素放在其最终位置上。<span lang="EN-US"><o:p></o:p></span></font></span></p>
+<p><span style="font-size: 10.5pt; font-family: 宋体; mso-bidi-font-family: 宋体; mso-hansi-font-family: Calibri; mso-hansi-theme-font: minor-latin; mso-font-kerning: 0pt; mso-ansi-language: EN-US; mso-fareast-language: ZH-CN; mso-bidi-language: AR-SA">A.选择<span lang="EN-US"> B. </span>冒泡<span lang="EN-US"> C. </span>归并<span lang="EN-US"> D. </span>堆</span></p>
+      	
+                <input type="hidden" name="problemID" value="4786">      	
+                <input type="hidden" name="assignID" value="903">  
+            </form>  
+             
+        </td>
+        
+   </tr>   
+   
+   
+   <tr>
+        <th style="width:4em">9.</th>
+        <td>
+            <span id="saveTip4787" style="z-index: 100;position: absolute;right:0;" class="badge badge-success"></span>
+            <form method="post" name="answerForm4787" action="stuAnswerHandler.jsp" target="frame_problemhandler" autocomplete="off">
+                <p align="left" style="margin: 0cm 0cm 0pt; text-align: left; mso-layout-grid-align: none" class="MsoNormal">对一组数据（84，47，25，15，21）排序，数据的排列次序在排序的过程中的变化为<br />
+（1） 84 47 25 15 21<br />
+（2） 15 47 25 84 21<br />
+（3） 15 21 25 84 47<br />
+（4） 15 21 25 47 84<br />
+则采用的排序是 <input name="answer1" type="text" maxlength="15" onChange="document.answerForm4787.submit();" value="A" class="optionMulti">。</p>
+<p align="left" style="margin: 0cm 0cm 0pt; text-align: left; mso-layout-grid-align: none" class="MsoNormal"><br />
+A.  选择 B. 冒泡 C. 快速 D. 插入</p>
+      	
+                <input type="hidden" name="problemID" value="4787">      	
+                <input type="hidden" name="assignID" value="903">  
+            </form>  
+             
+        </td>
+        
+   </tr>   
+   
+   
+   <tr>
+        <th style="width:4em">10.</th>
+        <td>
+            <span id="saveTip4788" style="z-index: 100;position: absolute;right:0;" class="badge badge-success"></span>
+            <form method="post" name="answerForm4788" action="stuAnswerHandler.jsp" target="frame_problemhandler" autocomplete="off">
+                <p class="MsoListParagraph" style="text-indent: -18pt; margin: 0cm 0cm 0pt 18pt; mso-char-indent-count: 0; mso-list: l0 level1 lfo1"><span style="font-size:16px"><span style="font-family: 宋体; mso-hansi-font-family: Calibri; mso-hansi-theme-font: minor-latin; mso-fareast-font-family: 宋体; mso-fareast-theme-font: minor-fareast; mso-ascii-font-family: Calibri; mso-ascii-theme-font: minor-latin">若要进行从小到大排序，数据元素序列</span><span lang="EN-US"><span style="font-family:Calibri">11,12,13,7,8,9,23,4,5</span></span><span style="font-family: 宋体; mso-hansi-font-family: Calibri; mso-hansi-theme-font: minor-latin; mso-fareast-font-family: 宋体; mso-fareast-theme-font: minor-fareast; mso-ascii-font-family: Calibri; mso-ascii-theme-font: minor-latin">是采用下列排序方法之一得到的第二趟排序后的结果，则该排序算法只能是<span style="font-size:12px;font-family:Arial"><input name="answer1" type="text" maxlength="15" onChange="document.answerForm4788.submit();" value="B" class="optionMulti"> </span></span></span></p><p class="MsoListParagraph" style="text-indent: -18pt; margin: 0cm 0cm 0pt 18pt; mso-char-indent-count: 0; mso-list: l0 level1 lfo1"><span style="font-size:16px"><span lang="EN-US"><span style="font-family:Calibri">A: </span></span><span style="font-family: 宋体; mso-hansi-font-family: Calibri; mso-hansi-theme-font: minor-latin; mso-fareast-font-family: 宋体; mso-fareast-theme-font: minor-fareast; mso-ascii-font-family: Calibri; mso-ascii-theme-font: minor-latin">冒泡排序</span><span lang="EN-US"><span style="font-family:Calibri"><span style="mso-spacerun: yes">&nbsp; </span>B:</span></span><span style="font-family: 宋体; mso-hansi-font-family: Calibri; mso-hansi-theme-font: minor-latin; mso-fareast-font-family: 宋体; mso-fareast-theme-font: minor-fareast; mso-ascii-font-family: Calibri; mso-ascii-theme-font: minor-latin">插入排序</span><span lang="EN-US"><span style="font-family:Calibri"><span style="mso-spacerun: yes">&nbsp; </span>C:</span></span><span style="font-family: 宋体; mso-hansi-font-family: Calibri; mso-hansi-theme-font: minor-latin; mso-fareast-font-family: 宋体; mso-fareast-theme-font: minor-fareast; mso-ascii-font-family: Calibri; mso-ascii-theme-font: minor-latin">选择排序</span><span lang="EN-US"><span style="font-family:Calibri"><span style="mso-spacerun: yes">&nbsp;&nbsp; </span>D</span></span><span style="font-family: 宋体; mso-hansi-font-family: Calibri; mso-hansi-theme-font: minor-latin; mso-fareast-font-family: 宋体; mso-fareast-theme-font: minor-fareast; mso-ascii-font-family: Calibri; mso-ascii-theme-font: minor-latin">。二路归并排序</span></span></p><p>&nbsp;</p>
+      	
+                <input type="hidden" name="problemID" value="4788">      	
+                <input type="hidden" name="assignID" value="903">  
+            </form>  
+             
+        </td>
+        
+   </tr>   
+   
+   
+   <tr>
+        <th style="width:4em">11.</th>
+        <td>
+            <span id="saveTip4789" style="z-index: 100;position: absolute;right:0;" class="badge badge-success"></span>
+            <form method="post" name="answerForm4789" action="stuAnswerHandler.jsp" target="frame_problemhandler" autocomplete="off">
+                <p>选择：对有8个元素的序列（49，38，65，97，76，13，27，50）按从小到大顺序进行排序，<input name="answer1" type="text" maxlength="15" onChange="document.answerForm4789.submit();" value="B" class="optionMulti">是选择排序法的第一趟的结果</p>
+<p>A.13,38,65,97,76,49,27,50</p>
+<p>B.13,27,38,49,50,65,76,97</p>
+<p>C.97,76,65,50,49,38,27,13</p>
+<p>D.13,38,65,50,76,49,27,97</p>
+      	
+                <input type="hidden" name="problemID" value="4789">      	
+                <input type="hidden" name="assignID" value="903">  
+            </form>  
+             
+        </td>
+        
+   </tr>   
+   
+   
+   <tr>
+        <th style="width:4em">12.</th>
+        <td>
+            <span id="saveTip4790" style="z-index: 100;position: absolute;right:0;" class="badge badge-success"></span>
+            <form method="post" name="answerForm4790" action="stuAnswerHandler.jsp" target="frame_problemhandler" autocomplete="off">
+                <p>为实现快速排序算法，待排序序列宜采用的存储方式是<input name="answer1" type="text" maxlength="15" onChange="document.answerForm4790.submit();" value="A" class="optionMulti"></p>
+<p>A．顺序存储 B．散列存储 C．链式存储 D．索引存储</p>
+      	
+                <input type="hidden" name="problemID" value="4790">      	
+                <input type="hidden" name="assignID" value="903">  
+            </form>  
+             
+        </td>
+        
+   </tr>   
+   
+   
+   <tr>
+        <th style="width:4em">13.</th>
+        <td>
+            <span id="saveTip4799" style="z-index: 100;position: absolute;right:0;" class="badge badge-success"></span>
+            <form method="post" name="answerForm4799" action="stuAnswerHandler.jsp" target="frame_problemhandler" autocomplete="off">
+                <p>快速排序在平均情况下的时间复杂度为<input name="answer1" type="text" maxlength="15" onChange="document.answerForm4799.submit();" value="A" class="optionMulti">，在最环情况下的时间复杂度为<input name="answer2" type="text" maxlength="15" onChange="document.answerForm4799.submit();" value="B" class="optionMulti"></p>
+<p>A.. O(nlogn)</p>
+<p>B. O(n<sup>2</sup>)</p>
+<p>C.O(n<sup>2</sup>logn)</p>
+<p>D. O(n)</p>
+      	
+                <input type="hidden" name="problemID" value="4799">      	
+                <input type="hidden" name="assignID" value="903">  
+            </form>  
+             
+        </td>
+        
+   </tr>   
+   
+   
+   <tr>
+        <th style="width:4em">14.</th>
+        <td>
+            <span id="saveTip4797" style="z-index: 100;position: absolute;right:0;" class="badge badge-success"></span>
+            <form method="post" name="answerForm4797" action="stuAnswerHandler.jsp" target="frame_problemhandler" autocomplete="off">
+                <p><span style="font-size:16px">给出一组关键字序列</span><span style="font-family:Times New Roman, serif"><span style="font-size:16px">{12,2,16,30,8,28,4,10,20,6,18}</span></span><span style="font-size:16px">，当用快速排序（选第一个记录为基准点进行划分，采用教材P336-337描述的算法）从小到大进行排序第一趟结束时的序列为</span><span style="font-family:Times New Roman, serif"><span style="font-size:16px"><input name="answer1" type="text" maxlength="15" onChange="document.answerForm4797.submit();" value="C" class="optionMulti"></span></span></p><p style="text-align:left;margin-bottom: 0cm;"><span style="font-family:Times New Roman, serif"><span style="font-size:16px">A. 6</span></span><span style="font-size:16px">，</span><span style="font-family:Times New Roman, serif"><span style="font-size:16px">2</span></span><span style="font-size:16px">，</span><span style="font-family:Times New Roman, serif"><span style="font-size:16px">8</span></span><span style="font-size:16px">，</span><span style="font-family:Times New Roman, serif"><span style="font-size:16px">10</span></span><span style="font-size:16px">，</span><span style="font-family:Times New Roman, serif"><span style="font-size:16px">4</span></span><span style="font-size:16px">，</span><span style="font-family:Times New Roman, serif"><span style="font-size:16px">12</span></span><span style="font-size:16px">，</span><span style="font-family:Times New Roman, serif"><span style="font-size:16px">28</span></span><span style="font-size:16px">，</span><span style="font-family:Times New Roman, serif"><span style="font-size:16px">30</span></span><span style="font-size:16px">，</span><span style="font-family:Times New Roman, serif"><span style="font-size:16px">16</span></span><span style="font-size:16px">，</span><span style="font-family:Times New Roman, serif"><span style="font-size:16px">20</span></span><span style="font-size:16px">，</span><span style="font-family:Times New Roman, serif"><span style="font-size:16px">18</span></span></p><p style="text-align:left;margin-bottom: 0cm;"><span style="font-family:Times New Roman, serif"><span style="font-size:16px">B. 6</span></span><span style="font-size:16px">，</span><span style="font-family:Times New Roman, serif"><span style="font-size:16px">4</span></span><span style="font-size:16px">，</span><span style="font-family:Times New Roman, serif"><span style="font-size:16px">8</span></span><span style="font-size:16px">，</span><span style="font-family:Times New Roman, serif"><span style="font-size:16px">10</span></span><span style="font-size:16px">，</span><span style="font-family:Times New Roman, serif"><span style="font-size:16px">2</span></span><span style="font-size:16px">，</span><span style="font-family:Times New Roman, serif"><span style="font-size:16px">12</span></span><span style="font-size:16px">，</span><span style="font-family:Times New Roman, serif"><span style="font-size:16px">28</span></span><span style="font-size:16px">，</span><span style="font-family:Times New Roman, serif"><span style="font-size:16px">30</span></span><span style="font-size:16px">，</span><span style="font-family:Times New Roman, serif"><span style="font-size:16px">16</span></span><span style="font-size:16px">，</span><span style="font-family:Times New Roman, serif"><span style="font-size:16px">20</span></span><span style="font-size:16px">，</span><span style="font-family:Times New Roman, serif"><span style="font-size:16px">18</span></span></p><p style="text-align:left;margin-bottom: 0cm;"><span style="font-family:Times New Roman, serif"><span style="font-size:16px">C. 4</span></span><span style="font-size:16px">，</span><span style="font-family:Times New Roman, serif"><span style="font-size:16px">2</span></span><span style="font-size:16px">，</span><span style="font-size: medium;">6</span><span style="font-size:16px">，</span><span style="font-family:Times New Roman, serif"><span style="font-size:16px">10</span></span><span style="font-size:16px">，</span><span style="font-family:Times New Roman, serif"><span style="font-size:16px">8</span></span><span style="font-size:16px">，</span><span style="font-family:Times New Roman, serif"><span style="font-size:16px">12</span></span><span style="font-size:16px">，</span><span style="font-family:Times New Roman, serif"><span style="font-size:16px">28</span></span><span style="font-size:16px">，</span><span style="font-family:Times New Roman, serif"><span style="font-size:16px">30</span></span><span style="font-size:16px">，</span><span style="font-family:Times New Roman, serif"><span style="font-size:16px">20</span></span><span style="font-size:16px">，</span><span style="font-family:Times New Roman, serif"><span style="font-size:16px">16</span></span><span style="font-size:16px">，</span><span style="font-family:Times New Roman, serif"><span style="font-size:16px">18</span></span></p><p style="text-align: left; margin-bottom: 0cm;"><span style="font-family:Times New Roman, serif"><span style="font-size:16px">D. </span></span><span style="font-family:Times New Roman, serif"><span style="font-size:16px">4</span></span><span style="font-size:16px">，</span><span style="font-family:Times New Roman, serif"><span style="font-size:16px">2</span></span><span style="font-size:16px">，</span><span style="font-family:Times New Roman, serif"><span style="font-size:16px">8</span></span><span style="font-size:16px">，</span><span style="font-family:Times New Roman, serif"><span style="font-size:16px">10</span></span><span style="font-size:16px">，</span><span style="font-family:Times New Roman, serif"><span style="font-size:16px">6</span></span><span style="font-size:16px">，</span><span style="font-family:Times New Roman, serif"><span style="font-size:16px">12</span></span><span style="font-size:16px">，</span><span style="font-family:Times New Roman, serif"><span style="font-size:16px">16</span></span><span style="font-size:16px">，</span><span style="font-family:Times New Roman, serif"><span style="font-size:16px">20</span></span><span style="font-size:16px">，</span><span style="font-family:Times New Roman, serif"><span style="font-size:16px">28</span></span><span style="font-size:16px">，</span><span style="font-family:Times New Roman, serif"><span style="font-size:16px">30</span></span><span style="font-size:16px">，</span><span style="font-family:Times New Roman, serif"><span style="font-size:16px">18</span></span></p>
+      	
+                <input type="hidden" name="problemID" value="4797">      	
+                <input type="hidden" name="assignID" value="903">  
+            </form>  
+             
+        </td>
+        
+   </tr>   
+   
+   
+   <tr>
+        <th style="width:4em">15.</th>
+        <td>
+            <span id="saveTip4794" style="z-index: 100;position: absolute;right:0;" class="badge badge-success"></span>
+            <form method="post" name="answerForm4794" action="stuAnswerHandler.jsp" target="frame_problemhandler" autocomplete="off">
+                <p><span style="font-family: arial,helvetica,sans-serif; font-size: 16px;"><span style="text-align: left; color: rgb(0, 0, 0); text-transform: none; text-indent: 0px; letter-spacing: normal; font-family: arial,helvetica,sans-serif; font-style: normal; font-variant: normal; font-weight: 400; text-decoration: none; word-spacing: 0px; display: inline !important; orphans: 2; float: none; -webkit-text-stroke-width: 0px; background-color: transparent;">若利用快速排序算法进行从小到大排序，下列选项中，不可能是经过两次选择分界元素并确定其最终位置后的排序结果的是</span><input name="answer1" type="text" maxlength="15" onChange="document.answerForm4794.submit();" value="C" class="optionMulti">:</span></p><p><span style="font-family: arial,helvetica,sans-serif; font-size: 16px;">A. 2,3,5,4,6,7,9</span></p><p><span style="font-family: arial,helvetica,sans-serif; font-size: 16px;">B. 2,7,5,6,4,3,9</span></p><p><span style="font-family: arial,helvetica,sans-serif; font-size: 16px;">C. 3,2,5,4,7,6,9</span></p><p><span style="font-family: arial,helvetica,sans-serif; font-size: 16px;">D. 4,2,3,5,7,6,9</span></p>
+      	
+                <input type="hidden" name="problemID" value="4794">      	
+                <input type="hidden" name="assignID" value="903">  
+            </form>  
+             
+        </td>
+        
+   </tr>   
+    
+ </tbody>
+</table>
+ 
+
+                    	
+
+                    
+                    
+
+
+
+<a name="An_Program" id="An_Program"></a>
+
+<i class="fas fa-pencil-alt"></i><b> 编程题</b>
+
+<table class="table table-striped">
+    
+    <thead>
+        <tr> 
+            <th style="width:4em">#</th>
+            <th width="38%"> 题目</th>   
+            <th style="width:5em"> 分值</th>  
+            <th> 批阅信息</th>  
+        </tr>
+    </thead>
+   
+    <tbody>
+
+        <tr> 
+            <th>1.</th>
+            <td>
+                
+                            <a href="programList.jsp?proNum=1&courseID=25&assignID=903"> 单词查找（查找-基本题）</a>
+                
+                
+            </td>
+            <td>40.00</td>
+            <td>
+                
+                    <a href="/downloadFile?filename=aQnwMO2V54MloHdkDYcwqrpziX0ctfbHqwd51iVv2rBvNPWbEOctORQuQy1yiuqIRuUs1JT-xnBKvZknLOwOFSgkPKwGPSOPO6LCgchliEQ">下载源文件</a>
+                    <hr>
+                
+                <small><font color="#3366CC">得分40.00&nbsp;&nbsp;&nbsp;最后一次提交时间:2021-05-17 19:54:28</font><br><br>共有测试数据:9<br>平均占用内存:4.226K&nbsp;&nbsp;&nbsp;&nbsp;平均CPU时间:0.00841S&nbsp;&nbsp;&nbsp;&nbsp;平均墙钟时间:0.00839S<br><br><table border="0" cellpadding="0" cellspacing="0" width=400><tr><td><b>测试数据</b></td><td><b>评判结果</b></td></tr><tr><td>测试数据1</td><td>完全正确</td></tr><tr><td>测试数据2</td><td>完全正确</td></tr><tr><td>测试数据3</td><td>完全正确</td></tr><tr><td>测试数据4</td><td>完全正确</td></tr><tr><td>测试数据5</td><td>完全正确</td></tr><tr><td>测试数据6</td><td>完全正确</td></tr><tr><td>测试数据7</td><td>完全正确</td></tr><tr><td>测试数据8</td><td>完全正确</td></tr><tr><td>测试数据9</td><td>完全正确</td></tr></table></small>
+                 <div align="right">
+                     
+                     
+                        <a href="judgeDetailsRedirect.jsp?assignID=903&problemID=4808" target="_blank" class="btn btn-light btn-sm" role="button" aria-pressed="true">
+                            详细  <i class="fas fa-chevron-circle-right"></i>
+                        </a>
+                     
+                     
+                 </div>
+            </td>            
+
+        </tr>
+    
+        <tr> 
+            <th>2.</th>
+            <td>
+                
+                            <a href="programList.jsp?proNum=2&courseID=25&assignID=903"> 排座位（简）a</a>
+                
+                
+            </td>
+            <td>20.00</td>
+            <td>
+                
+                    <a href="/downloadFile?filename=aQnwMO2V54MloHdkDYcwqrpziX0ctfbHqwd51iVv2rBvNPWbEOctORQuQy1yiuqIRuUs1JT-xnBpPp4CFq3PTygkPKwGPSOPFV47Z3-5ZjQ">下载源文件</a>
+                    <hr>
+                
+                <small><font color="#3366CC">得分20.00&nbsp;&nbsp;&nbsp;最后一次提交时间:2021-05-17 22:55:23</font><br><br>共有测试数据:5<br>平均占用内存:1.227K&nbsp;&nbsp;&nbsp;&nbsp;平均CPU时间:0.00449S&nbsp;&nbsp;&nbsp;&nbsp;平均墙钟时间:0.00449S<br><br><table border="0" cellpadding="0" cellspacing="0" width=400><tr><td><b>测试数据</b></td><td><b>评判结果</b></td></tr><tr><td>测试数据1</td><td>完全正确</td></tr><tr><td>测试数据2</td><td>完全正确</td></tr><tr><td>测试数据3</td><td>完全正确</td></tr><tr><td>测试数据4</td><td>完全正确</td></tr><tr><td>测试数据5</td><td>完全正确</td></tr></table></small>
+                 <div align="right">
+                     
+                     
+                        <a href="judgeDetailsRedirect.jsp?assignID=903&problemID=4958" target="_blank" class="btn btn-light btn-sm" role="button" aria-pressed="true">
+                            详细  <i class="fas fa-chevron-circle-right"></i>
+                        </a>
+                     
+                     
+                 </div>
+            </td>            
+
+        </tr>
+    
+        <tr> 
+            <th>3.</th>
+            <td>
+                
+                            <a href="programList.jsp?proNum=3&courseID=25&assignID=903"> 整数排序（排序-基本题）</a>
+                
+                
+            </td>
+            <td>40.00</td>
+            <td>
+                
+                    <a href="/downloadFile?filename=aQnwMO2V54MloHdkDYcwqrpziX0ctfbHqwd51iVv2rBvNPWbEOctORQuQy1yiuqIRuUs1JT-xnAMxrFNw-ACxTCkjG6-7cs7vfbN8I2TiFw">下载源文件</a>
+                    <hr>
+                
+                <small><font color="#3366CC">得分40.00&nbsp;&nbsp;&nbsp;最后一次提交时间:2021-05-18 17:30:08</font><br><br>共有测试数据:5<br>平均占用内存:1.225K&nbsp;&nbsp;&nbsp;&nbsp;平均CPU时间:0.00582S&nbsp;&nbsp;&nbsp;&nbsp;平均墙钟时间:0.00580S<br><br><table border="0" cellpadding="0" cellspacing="0" width=400><tr><td><b>测试数据</b></td><td><b>评判结果</b></td></tr><tr><td>测试数据1</td><td>完全正确</td></tr><tr><td>测试数据2</td><td>完全正确</td></tr><tr><td>测试数据3</td><td>完全正确</td></tr><tr><td>测试数据4</td><td>完全正确</td></tr><tr><td>测试数据5</td><td>完全正确</td></tr></table></small>
+                 <div align="right">
+                     
+                     
+                        <a href="judgeDetailsRedirect.jsp?assignID=903&problemID=4795" target="_blank" class="btn btn-light btn-sm" role="button" aria-pressed="true">
+                            详细  <i class="fas fa-chevron-circle-right"></i>
+                        </a>
+                     
+                     
+                 </div>
+            </td>            
+
+        </tr>
+    
+ 
+    </tbody>
+</table>
+                     
+
+        		
+
+
+                   
+           
+        </div>
+   
+    </div>
+    
+    
+    
+    
+    
+    
+</div>
+
+<IFRAME name="frame_problemhandler" frameBorder="0" height="0" marginHeight="0" marginWidth="0" width="0"></IFRAME>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+    <IFRAME src="/includes/stayalive.jsp"  frameBorder=0 height=0 marginHeight=0 marginWidth=0 width=0></IFRAME>
+    
+    <footer id="cgfooter" style="min-height: 70px; width: 100%; padding: 15px;position: relative;bottom: 0;" class="bg-light mt-5">
+      <div class="container text-center">
+       
+              <p><span style="color: rgb(102, 102, 153);">北京航空航天大学 计算机学院</span></p><p><span style="color: rgb(102, 102, 153);">若重置密码，请与当前的任课教师联系</span></p>
+      </div>
+    </footer>
+    
+  
+  
+
+
+    
+
+
+
+
+
+
+
+
+
+
+<script src="/indexcs/js/jquery.js"></script>
+<script>
+    function CGcheckOnline() {
+        setTimeout("doOnlineCheck()", 50000);
+    }
+    
+    function doOnlineCheck() {
+        
+        $.ajax({
+            url: "/includes/cgkeepalive.jsp",
+            data:{userid:"21049"},
+            type:"POST",
+            dataType:"text",
+            timeout:20000,
+            success: function(msg) {
+                var retMsg = msg.trim();
+                if(retMsg === "null") {
+                    alert("与服务器的会话超时，请注销重新登录！");
+                } else if(retMsg === "false") {
+                    alert("用户ID发生变化，请检查是否使用其他账号登录本机！");
+                }
+                CGcheckOnline();
+            },
+            error: function(XMLHttpRequest, textStatus, erroThrown) {
+                alert("可能由于网络问题与服务器的连接断开，请尝试注销重新登录！");
+                CGcheckOnline();
+            }
+        });
+    }
+    
+    $(document).ready(function () {
+        //Increment the idle time counter every minute.
+        CGcheckOnline();
+    });
+
+    
+</script>
+    
+        
+
+
+
+
+
+
+
+
+
+
+
+<script>
+    
+    $('body').bind('copy',function(e) {
+        e.preventDefault(); return false;
+    });
+</script> 
+    
+
+
+</body>
+</html>
+

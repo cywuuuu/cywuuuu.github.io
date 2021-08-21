@@ -1,0 +1,99 @@
+#define MAXSIZE 5000
+
+typedef struct HashNode
+{
+    int val;
+    int key;
+    struct HashNode *next;
+}HashNode;
+
+typedef struct MyHashMap{
+    int size;
+    HashNode* index;//where you put your pos in
+} MyHashMap;
+
+/** Initialize your data structure here. */
+
+MyHashMap* myHashMapCreate() {
+    MyHashMap *map = (MyHashMap*)malloc(sizeof(MyHashMap));
+    map->size = MAXSIZE;
+    HashNode *index =(HashNode*) calloc(MAXSIZE, sizeof(HashNode));
+    for(int i = 0; i < map->size; i++)
+    {
+        map->index[i].next = NULL;
+        map->index[i].key = -1;
+        
+    }
+    return map;
+}
+
+/** value will always be non-negative. */
+void myHashMapPut(MyHashMap* obj, int key, int value) {
+    int pos = key%MAXSIZE;
+    HashNode *p = &obj->index[pos];
+    while(p != NULL)
+    {
+        if(p->key = -1)
+        {
+            p->key = key;
+            p->val = value;
+            HashNode *q = (HashNode*)malloc(sizeof(HashNode));
+            q->key = -1;
+            q->next = NULL;
+            p->next = q;
+            return;
+        }
+        if(p->key = key)
+        {
+            p->val = value;
+            return;
+        }
+        p = p->next;
+
+    }
+
+}
+
+/** Returns the value to which the specified key is mapped, or -1 if this map contains no mapping for the key */
+int myHashMapGet(MyHashMap* obj, int key) {
+    int pos = key%MAXSIZE;
+    HashNode *p = &obj->index[pos];
+    while(p!=NULL)
+    {
+        if(p->key = -1)
+        {
+            return -1;
+        }
+        if(p->key = key)
+        {
+            return p->val;
+        }
+        p = p->next;
+    }
+    return -1;
+}
+
+/** Removes the mapping of the specified value key if this map contains a mapping for the key */
+void myHashMapRemove(MyHashMap* obj, int key) {
+    int pos = key%MAXSIZE;
+    HashNode *p = &obj->index[pos];
+    while(p->next!=NULL)
+    {
+        if(p->next->key = -1)
+        {
+            return;
+        }
+        if(p->next->key = key)
+        {
+            HashNode* tmp = p->next;
+            p->next = p->next->next;
+            free(tmp);
+            return;
+        }
+        p = p->next;
+    }
+}
+
+void myHashMapFree(MyHashMap* obj) {
+    free(obj);
+}

@@ -1,0 +1,1040 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+    <meta charset="GBK">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">    
+    <META http-equiv="Content-Type" content="text/html; charset=GBK">
+    <meta http-equiv="Expires" CONTENT="0"> 
+    <meta http-equiv="Cache-Control" CONTENT="no-cache"> 
+    <meta http-equiv="Pragma" CONTENT="no-cache"> 
+    <link rel="shortcut icon" href="/images/cgicon.png">
+
+    <TITLE>CourseGrading：程序设计 自动评分 自动评判 代码相似性 上机考试</TITLE>
+    <script language="javascript">   
+        history.pushState(null, null, document.URL);
+        window.addEventListener('popstate', function () {
+                history.pushState(null, null, document.URL);
+        });
+    </script>
+    <!-- Bootstrap core CSS -->
+    <link href="/sv2/css/bootstrap4/bootstrap.min.css" rel="stylesheet">
+    <link href="/sv2/css/bootstrap4/docs.min.css" rel="stylesheet">    
+    
+   
+    <link href="/sv2/css/bootstrap4/fontawesome/css/all.css" rel="stylesheet">
+    <link href="/sv2/css/sticky-footer-navbar.css" rel="stylesheet">
+    <link href="/css/cg_sv2.css" rel="stylesheet">
+    
+    <script src="/sv2/css/bootstrap4/jquery-3.5.1.min.js"></script>
+    <script src="/sv2/css/bootstrap4/popper.min.js"></script>
+    
+    <script src="/sv2/css/bootstrap4/bootstrap.bundle.min.js"></script>
+    <script src="/sv2/css/bootstrap4/docs.min.js"></script>
+
+    <link href="/js/bootstrap/bootstrap-select.min.css" rel="stylesheet">
+    <script src="/js/bootstrap/bootstrap-select.min.js"></script>
+  </head>
+
+<body>
+<nav class="navbar navbar-expand-lg navbar-light" style="background-color: #e3f2fd;">
+    
+    <a class="navbar-brand" href="/index.jsp"> <img src="/userfiles/skin/logo.png" border="0" height="25"></a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item active">
+                <a class="nav-link" href="/includes/redirect.jsp?tab=0">首页 <span class="sr-only">(current)</span></a>
+            </li>
+            
+            <li class="nav-item">
+                <a class="nav-link" href="/includes/redirect.jsp?tab=-1">课程信息</a>
+            </li>
+            
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="/includes/redirect.jsp?tab=-2">在线作业</a>
+            </li>
+            
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="/includes/redirect.jsp?tab=-3">在线考试</a>
+            </li>  
+            
+            
+                
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="/includes/redirect.jsp?tab=-4">在线答疑</a>
+            </li>    
+            
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="/includes/redirect.jsp?tab=-5">成绩查询</a>
+            </li>               
+                      
+
+                     
+            
+                                   
+
+        </ul>
+       
+        <form class="form-inline my-2 my-lg-0" name="courseForm" method="post" action="">
+            
+            
+            <ul class="navbar-nav mr-auto">
+
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                       <i class="fas fa-user"></i> 陈一文
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="userDropdown">
+                      <a class="dropdown-item" href="/includes/redirect.jsp?tab=-6"><i class="far fa-user"></i>个人信息</a>
+                    <a class="dropdown-item" href="/login/loginproc.jsp?logout=true"><i class="fas fa-sign-out-alt"></i> 注销</a>
+
+                    </div>
+                </li>
+                <!--
+                <li class="nav-item active">
+                    <a class="nav-link" href="help.jsp" target="_blank"><i class="fas fa-question-circle"></i> 帮助</a>
+                </li>
+                -->
+            </ul>
+            <label for="doChangeCourse" class="sr-only">切换课程</label>
+
+            <input type="hidden" name="doChangeCourse" value="true">
+            <select class="form-control" name="changeCourse" onchange="document.courseForm.submit()">
+              
+              <option value="25" selected>数据结构与程序设计（信息大类）</option>
+                    
+            </select>
+            
+            <ul class="navbar-nav mr-auto">
+                <li> <a class="nav-link" href="/sv2/indexexp/contest/index.jsp?my=true&contestCID=25"><i class="fas fa-medal text-danger"></i> 比赛</a></li>
+                
+                <li class="nav-item">
+                    <a class="nav-link" href="/acm/index.jsp" target="_blank"><i class="fas fa-code text-danger"></i> OnlineJudge</a>                    
+                </li>
+                
+                
+                
+                    <a class="nav-link" href="/graduation/index.jsp"><i class="fa fa-user-graduate text-danger"></i> 毕业设计</a>  
+                
+                    
+                 
+            </ul>
+            
+        </form>
+  </div>
+</nav>
+  
+
+
+
+<SCRIPT language=JavaScript src="../includes/common.js"></SCRIPT>
+
+<div class="container-fluid">
+    <div class="row mr-2 ml-1 mt-3">
+        <div class="col-2">
+           
+
+
+
+
+            <h6 class="d-flex justify-content-between align-items-center">
+                <span class="text-muted"><strong><i class="far fa-clock"></i> 当前作业</strong></span>
+                
+            </h6>
+            <div class="list-group list-group-flush mb-4">
+                
+                
+                  
+                        <a href="index.jsp?courseID=25&assignID=904" class="list-group-item list-group-item-action">
+                            <i class="fas fa-angle-double-right"></i> 20级第七次作业（图）
+                            
+                        </a>
+                            
+                        
+                  
+                  
+                        <a href="index.jsp?courseID=25&assignID=903" class="list-group-item list-group-item-action">
+                            <i class="fas fa-angle-double-right"></i> 20级第六次作业（查找与排序）
+                            
+                        </a>
+                            
+                        
+                  
+                  
+                        <a href="index.jsp?courseID=25&assignID=902" class="list-group-item list-group-item-action active">
+                            <i class="fas fa-angle-double-right"></i> 20级第五次作业（树）
+                            
+                        </a>
+                            
+                        
+                  
+                  
+                        <a href="index.jsp?courseID=25&assignID=895" class="list-group-item list-group-item-action">
+                            <i class="fas fa-angle-double-right"></i> 2020级（信息大类）数据结构综合作业
+                            
+                        </a>
+                            
+                        
+                  
+            </div>
+
+
+            <h6 class="d-flex justify-content-between align-items-center">
+                <span class="text-muted"><strong><i class="fas fa-history"></i> 历史作业</strong></span>                
+            </h6>
+            <div class="list-group list-group-flush">
+                
+                  
+                    <a href="index.jsp?courseID=25&assignID=901" class="list-group-item list-group-item-action">
+                          <i class="fas fa-angle-double-right"></i> 20级第四次作业
+                          
+                    </a>                                 
+                        
+              
+                  
+                    <a href="index.jsp?courseID=25&assignID=900" class="list-group-item list-group-item-action">
+                          <i class="fas fa-angle-double-right"></i> 20级第三次作业
+                          
+                    </a>                                 
+                        
+              
+                  
+                    <a href="index.jsp?courseID=25&assignID=899" class="list-group-item list-group-item-action">
+                          <i class="fas fa-angle-double-right"></i> 20级第二次作业
+                          
+                    </a>                                 
+                        
+              
+                  
+                    <a href="index.jsp?courseID=25&assignID=896" class="list-group-item list-group-item-action">
+                          <i class="fas fa-angle-double-right"></i> 20级第一次作业
+                          
+                    </a>                                 
+                        
+              
+                
+            </div>
+            
+      
+      
+        
+        </div>
+        <div class="col-10">
+            <div class="shadow-sm p-3 mb-3 bg-light rounded">
+                
+                    <b>20级第五次作业（树）</b>
+                    
+                    作业时间： <b>2021-04-29 18:00:00</b> 至 <b>2021-06-20 23:55:00</b>
+                    
+                
+                <hr>
+                第五次作业主要考查对树和二叉树知识的掌握情况，请用相关知识完成本次作业。<BR>延至6月17日。
+            </div>
+            
+
+               
+            
+                
+            
+                
+               
+                      
+            	
+
+                    
+                    
+
+
+
+<style type="text/css">
+<!--
+
+.cloze {BORDER-RIGHT: rgb(0,0,0) 0px solid; BORDER-TOP: rgb(0,0,0) 0px solid; FONT-SIZE: 10pt; BORDER-LEFT: rgb(0,0,0) 0px solid; WIDTH: 250px; BORDER-BOTTOM: rgb(0,0,0) 1px solid; HEIGHT: 20px}
+-->
+</style>
+
+<i class="fas fa-pencil-alt"></i><b> 填空题</b>
+<table  class="table table-striped">
+    <tbody>
+		
+			  
+   
+   <tr>
+        <th style="width:4em">1.</th>
+        <td>
+            <span id="saveTip4772" style="z-index: 100;position: absolute;right:0;" class="badge badge-success"></span>
+            <form method="post" name="answerForm4772" action="stuAnswerHandler.jsp" target="frame_problemhandler" autocomplete="off">
+                <p>对具有n个结点的完全二叉树按照层次从上到下，每一层从左到右的次序对所有结点进行编号，编号为i的结点的双亲结点的编号为&nbsp;<input name="answer1" type="text" onChange="document.answerForm4772.submit();" value="[i/2]" class=cloze>&nbsp;，左孩子的编号为&nbsp;<input name="answer2" type="text" onChange="document.answerForm4772.submit();" value="2i" class=cloze> 右孩子的编号为<input name="answer3" type="text" onChange="document.answerForm4772.submit();" value="2i+1" class=cloze>&nbsp;。（从1开始编号，用[x]表示对x向下取整）</p>
+                <input type="hidden" name="problemID" value="4772">      	
+                <input type="hidden" name="assignID" value="902">  
+            </form>
+            
+        </td>
+       
+   </tr>  
+		 
+    
+   <tr>
+        <th style="width:4em">2.</th>
+        <td>
+            <span id="saveTip4770" style="z-index: 100;position: absolute;right:0;" class="badge badge-success"></span>
+            <form method="post" name="answerForm4770" action="stuAnswerHandler.jsp" target="frame_problemhandler" autocomplete="off">
+                <p>度为k的树中，第i层最多有<input name="answer1" type="text" onChange="document.answerForm4770.submit();" value="k^(i-1)" class=cloze>个结点（i&ge;1）（2的幂指数可表示为形如 2^(n+1) 形式）</p>
+                <input type="hidden" name="problemID" value="4770">      	
+                <input type="hidden" name="assignID" value="902">  
+            </form>
+            
+        </td>
+       
+   </tr>  
+		 
+    
+   <tr>
+        <th style="width:4em">3.</th>
+        <td>
+            <span id="saveTip4771" style="z-index: 100;position: absolute;right:0;" class="badge badge-success"></span>
+            <form method="post" name="answerForm4771" action="stuAnswerHandler.jsp" target="frame_problemhandler" autocomplete="off">
+                <p>若一棵满二叉树有2047个结点，则该二叉树中叶结点的个数为<input name="answer1" type="text" onChange="document.answerForm4771.submit();" value="1024" class=cloze>&nbsp;。</p>
+                <input type="hidden" name="problemID" value="4771">      	
+                <input type="hidden" name="assignID" value="902">  
+            </form>
+            
+        </td>
+       
+   </tr>  
+		 
+    
+   <tr>
+        <th style="width:4em">4.</th>
+        <td>
+            <span id="saveTip4769" style="z-index: 100;position: absolute;right:0;" class="badge badge-success"></span>
+            <form method="post" name="answerForm4769" action="stuAnswerHandler.jsp" target="frame_problemhandler" autocomplete="off">
+                <p>已知某完全二叉树采用顺序存储结构，结点的存放次序为A，B，C，D，E，F，G，H，I，J，则该二叉树的后序序列为&nbsp;<input name="answer1" type="text" onChange="document.answerForm4769.submit();" value="HIDJEBFGCA" class=cloze>。（答案中不要加入空格及其他符号，格式如ABCDE）</p>
+                <input type="hidden" name="problemID" value="4769">      	
+                <input type="hidden" name="assignID" value="902">  
+            </form>
+            
+        </td>
+       
+   </tr>  
+		 
+    
+   <tr>
+        <th style="width:4em">5.</th>
+        <td>
+            <span id="saveTip4773" style="z-index: 100;position: absolute;right:0;" class="badge badge-success"></span>
+            <form method="post" name="answerForm4773" action="stuAnswerHandler.jsp" target="frame_problemhandler" autocomplete="off">
+                <p>若具有n个结点的二叉树采用二叉链表存储结构，则该链表中有<input name="answer1" type="text" onChange="document.answerForm4773.submit();" value="2n" class=cloze>个指针域，其中<input name="answer2" type="text" onChange="document.answerForm4773.submit();" value="n-1" class=cloze>个指针域用于链接孩子结点，<input name="answer3" type="text" onChange="document.answerForm4773.submit();" value="n+1" class=cloze>个指针域空闲存放着NULL。</p>
+                <input type="hidden" name="problemID" value="4773">      	
+                <input type="hidden" name="assignID" value="902">  
+            </form>
+            
+        </td>
+       
+   </tr>  
+		 
+    
+   <tr>
+        <th style="width:4em">6.</th>
+        <td>
+            <span id="saveTip4761" style="z-index: 100;position: absolute;right:0;" class="badge badge-success"></span>
+            <form method="post" name="answerForm4761" action="stuAnswerHandler.jsp" target="frame_problemhandler" autocomplete="off">
+                <p><span><span>已知二叉树的前序遍历序列为<span lang="EN-US">ABDCEFG,</span>中序遍历序列是<span lang="EN-US">DBCAFEG,</span>则其后序遍历序列为<span lang="EN-US"><input name="answer1" type="text" onChange="document.answerForm4761.submit();" value="DCBFGEA" class=cloze></span>。(答案中不要加空格及其他符号)</span></span></p>
+                <input type="hidden" name="problemID" value="4761">      	
+                <input type="hidden" name="assignID" value="902">  
+            </form>
+            
+        </td>
+       
+   </tr>  
+		 
+    
+   <tr>
+        <th style="width:4em">7.</th>
+        <td>
+            <span id="saveTip4763" style="z-index: 100;position: absolute;right:0;" class="badge badge-success"></span>
+            <form method="post" name="answerForm4763" action="stuAnswerHandler.jsp" target="frame_problemhandler" autocomplete="off">
+                <p class="MsoNormal" style="margin: 0cm 0cm 0pt; line-height: 150%"><span style="font-size: small"><span style="line-height: 150%; font-family: 宋体; mso-font-kerning: 0pt; mso-hansi-font-family: Calibri; mso-hansi-theme-font: minor-latin; mso-bidi-font-family: 宋体">在顺序存储的二叉树中，编号为<span lang="EN-US">i </span>和<span lang="EN-US">j </span>的两个结点处在同一层的条件是<span lang="EN-US"><span style="font-family:Arial"><input name="answer1" type="text" onChange="document.answerForm4763.submit();" value="[logi] = [logj]" class=cloze></span></span>。（利用[]表示向下取整，<span style="font-size:12px">log<sub>2<sup>X</sup></sub>可表示为：logx</span>）</span></span></p>
+                <input type="hidden" name="problemID" value="4763">      	
+                <input type="hidden" name="assignID" value="902">  
+            </form>
+            
+        </td>
+       
+   </tr>  
+		 
+    
+   <tr>
+        <th style="width:4em">8.</th>
+        <td>
+            <span id="saveTip4766" style="z-index: 100;position: absolute;right:0;" class="badge badge-success"></span>
+            <form method="post" name="answerForm4766" action="stuAnswerHandler.jsp" target="frame_problemhandler" autocomplete="off">
+                <p>如果A,B,C,D的值分别为2，3，4，5，试计算下列前缀表达式的值。</p>
+<p>(1)＋－&times; A B C D &nbsp; &nbsp; &nbsp; 答：<input name="answer1" type="text" onChange="document.answerForm4766.submit();" value="7" class=cloze></p>
+<p>(2)－&times; A + B C D &nbsp; &nbsp; &nbsp; &nbsp;答：<input name="answer2" type="text" onChange="document.answerForm4766.submit();" value="9" class=cloze></p>
+                <input type="hidden" name="problemID" value="4766">      	
+                <input type="hidden" name="assignID" value="902">  
+            </form>
+            
+        </td>
+       
+   </tr>  
+		 
+    
+   <tr>
+        <th style="width:4em">9.</th>
+        <td>
+            <span id="saveTip4774" style="z-index: 100;position: absolute;right:0;" class="badge badge-success"></span>
+            <form method="post" name="answerForm4774" action="stuAnswerHandler.jsp" target="frame_problemhandler" autocomplete="off">
+                <p>采用逐点插入法建立序列（54,28,16,34,73,62,95,60,26,43）的二叉查找树后，查找数据元素62共进行<input name="answer1" type="text" onChange="document.answerForm4774.submit();" value="3" class=cloze>&nbsp;次元素间的比较。</p>
+                <input type="hidden" name="problemID" value="4774">      	
+                <input type="hidden" name="assignID" value="902">  
+            </form>
+            
+        </td>
+       
+   </tr>  
+		 
+    
+   <tr>
+        <th style="width:4em">10.</th>
+        <td>
+            <span id="saveTip4762" style="z-index: 100;position: absolute;right:0;" class="badge badge-success"></span>
+            <form method="post" name="answerForm4762" action="stuAnswerHandler.jsp" target="frame_problemhandler" autocomplete="off">
+                <p>若以{4，5，6，7，8}作为叶子结点的权值构造哈夫曼树，则其带权路径长度是<input name="answer1" type="text" onChange="document.answerForm4762.submit();" value="69" class=cloze>。</p>
+                <input type="hidden" name="problemID" value="4762">      	
+                <input type="hidden" name="assignID" value="902">  
+            </form>
+            
+        </td>
+       
+   </tr>  
+		 
+     
+  
+ </tbody>
+</table>
+                    	
+
+                    
+                    
+
+
+
+<style type="text/css">
+<!--
+.optionMulti {BORDER-RIGHT: rgb(0,0,0) 0px solid; BORDER-TOP: rgb(0,0,0) 0px solid;  BORDER-LEFT: rgb(0,0,0) 0px solid; font-size: 16px; WIDTH: 160px; BORDER-BOTTOM: rgb(0,0,0) 1px solid; }
+-->
+</style>
+
+
+
+<i class="fas fa-pencil-alt"></i><b> 选择题</b>
+
+<table  class="table table-striped">
+    <tbody>
+			  
+   
+   
+   <tr>
+        <th style="width:4em">1.</th>
+        <td>
+            <span id="saveTip4775" style="z-index: 100;position: absolute;right:0;" class="badge badge-success"></span>
+            <form method="post" name="answerForm4775" action="stuAnswerHandler.jsp" target="frame_problemhandler" autocomplete="off">
+                <p>在一棵度为4的树T中，若有20个度为4的结点，10个度为3的结点，1个度为2的结点，10个度为1的结点，则树T的叶节点个数是<input name="answer1" type="text" maxlength="15" onChange="document.answerForm4775.submit();" value="B" class="optionMulti">。</p>
+<p>A．41 &nbsp; &nbsp;B．82 &nbsp; &nbsp;C．113 &nbsp; &nbsp;D．122</p>
+      	
+                <input type="hidden" name="problemID" value="4775">      	
+                <input type="hidden" name="assignID" value="902">  
+            </form>  
+             
+        </td>
+        
+   </tr>   
+   
+   
+   <tr>
+        <th style="width:4em">2.</th>
+        <td>
+            <span id="saveTip4767" style="z-index: 100;position: absolute;right:0;" class="badge badge-success"></span>
+            <form method="post" name="answerForm4767" action="stuAnswerHandler.jsp" target="frame_problemhandler" autocomplete="off">
+                <p>一个满二叉树有m个树枝，n个结点，其深度为h，则 <input name="answer1" type="text" maxlength="15" onChange="document.answerForm4767.submit();" value="D" class="optionMulti">。</p><p>A. n = h + m &nbsp; &nbsp;B. h + m = 2n &nbsp; &nbsp;C. m = h - 1 &nbsp; &nbsp;D. n = 2<sup>h</sup>-1</p>
+      	
+                <input type="hidden" name="problemID" value="4767">      	
+                <input type="hidden" name="assignID" value="902">  
+            </form>  
+             
+        </td>
+        
+   </tr>   
+   
+   
+   <tr>
+        <th style="width:4em">3.</th>
+        <td>
+            <span id="saveTip4760" style="z-index: 100;position: absolute;right:0;" class="badge badge-success"></span>
+            <form method="post" name="answerForm4760" action="stuAnswerHandler.jsp" target="frame_problemhandler" autocomplete="off">
+                <p>若二叉树的前序序列与后序序列的次序正好相反，则该二叉树一定是<input name="answer1" type="text" maxlength="15" onChange="document.answerForm4760.submit();" value="D" class="optionMulti">的二叉树。</p>
+<p>A. 空或仅有一个结点</p>
+<p>B. 其分支结点无左子树</p>
+<p>C. 其分支结点无右子树</p>
+<p>D. 其分支结点的度都为1</p>
+      	
+                <input type="hidden" name="problemID" value="4760">      	
+                <input type="hidden" name="assignID" value="902">  
+            </form>  
+             
+        </td>
+        
+   </tr>   
+   
+   
+   <tr>
+        <th style="width:4em">4.</th>
+        <td>
+            <span id="saveTip4759" style="z-index: 100;position: absolute;right:0;" class="badge badge-success"></span>
+            <form method="post" name="answerForm4759" action="stuAnswerHandler.jsp" target="frame_problemhandler" autocomplete="off">
+                <p>在二叉查找树中进行查找的效率与<input name="answer1" type="text" maxlength="15" onChange="document.answerForm4759.submit();" value="A" class="optionMulti">有关。</p><p>A. 二叉查找树的深度</p><p>B. 二叉查找树的结点个数</p><p>C. 被查找结点的度</p><p>D. 二叉查找树的存储结构</p>
+      	
+                <input type="hidden" name="problemID" value="4759">      	
+                <input type="hidden" name="assignID" value="902">  
+            </form>  
+             
+        </td>
+        
+   </tr>   
+   
+   
+   <tr>
+        <th style="width:4em">5.</th>
+        <td>
+            <span id="saveTip4776" style="z-index: 100;position: absolute;right:0;" class="badge badge-success"></span>
+            <form method="post" name="answerForm4776" action="stuAnswerHandler.jsp" target="frame_problemhandler" autocomplete="off">
+                <p>将森林F转换为对应的二叉树T，F中叶结点的个数等于<input name="answer1" type="text" maxlength="15" onChange="document.answerForm4776.submit();" value="C" class="optionMulti">:</p>
+<p>A. T中叶结点的个数</p>
+<p>B. T中度为1的结点个数</p>
+<p>C. T中左孩子指针为空的结点个数</p>
+<p>D. T中右孩子指针为空的结点个数</p>
+      	
+                <input type="hidden" name="problemID" value="4776">      	
+                <input type="hidden" name="assignID" value="902">  
+            </form>  
+             
+        </td>
+        
+   </tr>   
+   
+   
+   <tr>
+        <th style="width:4em">6.</th>
+        <td>
+            <span id="saveTip4764" style="z-index: 100;position: absolute;right:0;" class="badge badge-success"></span>
+            <form method="post" name="answerForm4764" action="stuAnswerHandler.jsp" target="frame_problemhandler" autocomplete="off">
+                <p class="MsoNormal" style="margin: 0cm 0cm 0pt; line-height: 150%"><span style="font-size: 12pt; line-height: 150%; font-family: 宋体; mso-hansi-font-family: Calibri; mso-hansi-theme-font: minor-latin; mso-bidi-font-family: 宋体; mso-font-kerning: 0pt">当一棵有<span lang="EN-US">n </span>个结点的二叉树按层次从上到下，同层次从左到右将数据存放在一维数组<span lang="EN-US"> A[l..n]</span>中时，数组中第<span lang="EN-US">i </span>个结点的左孩子为<font size="2" face="Arial"> <input name="answer1" type="text" maxlength="15" onChange="document.answerForm4764.submit();" value="D" class="optionMulti"> </font>。<span lang="EN-US"><o:p></o:p></span></span></p>
+<p class="MsoNormal" style="margin: 0cm 0cm 0pt; line-height: 150%">&nbsp;</p>
+<p class="MsoNormal" style="margin: 0cm 0cm 0pt; line-height: 150%"><span lang="EN-US" style="font-size: 12pt; line-height: 150%; font-family: 宋体; mso-hansi-font-family: Calibri; mso-hansi-theme-font: minor-latin; mso-bidi-font-family: 宋体; mso-font-kerning: 0pt">A</span><span style="font-size: 12pt; line-height: 150%; font-family: 宋体; mso-hansi-font-family: Calibri; mso-hansi-theme-font: minor-latin; mso-bidi-font-family: 宋体; mso-font-kerning: 0pt">．<span lang="EN-US">A[2i](2i&lt;=n) </span></span></p>
+<p class="MsoNormal" style="margin: 0cm 0cm 0pt; line-height: 150%">&nbsp;</p>
+<p class="MsoNormal" style="margin: 0cm 0cm 0pt; line-height: 150%"><span style="font-size: 12pt; line-height: 150%; font-family: 宋体; mso-hansi-font-family: Calibri; mso-hansi-theme-font: minor-latin; mso-bidi-font-family: 宋体; mso-font-kerning: 0pt"><span lang="EN-US">B. A[2i+1](2i+1&lt;= n) </span></span></p>
+<p class="MsoNormal" style="margin: 0cm 0cm 0pt; line-height: 150%">&nbsp;</p>
+<p class="MsoNormal" style="margin: 0cm 0cm 0pt; line-height: 150%"><span style="font-size: 12pt; line-height: 150%; font-family: 宋体; mso-hansi-font-family: Calibri; mso-hansi-theme-font: minor-latin; mso-bidi-font-family: 宋体; mso-font-kerning: 0pt"><span lang="EN-US">C</span>．<span lang="EN-US">A[i/2] </span></span></p>
+<p class="MsoNormal" style="margin: 0cm 0cm 0pt; line-height: 150%">&nbsp;</p>
+<p class="MsoNormal" style="margin: 0cm 0cm 0pt; line-height: 150%"><span style="font-size: 12pt; line-height: 150%; font-family: 宋体; mso-hansi-font-family: Calibri; mso-hansi-theme-font: minor-latin; mso-bidi-font-family: 宋体; mso-font-kerning: 0pt"><span lang="EN-US">D</span>．无法确定<span lang="EN-US"><o:p></o:p></span></span></p>
+<p>&nbsp;</p>
+      	
+                <input type="hidden" name="problemID" value="4764">      	
+                <input type="hidden" name="assignID" value="902">  
+            </form>  
+             
+        </td>
+        
+   </tr>   
+   
+   
+   <tr>
+        <th style="width:4em">7.</th>
+        <td>
+            <span id="saveTip4765" style="z-index: 100;position: absolute;right:0;" class="badge badge-success"></span>
+            <form method="post" name="answerForm4765" action="stuAnswerHandler.jsp" target="frame_problemhandler" autocomplete="off">
+                <div style="line-height: 150%"><span style="font-size: 12pt; line-height: 150%">已知一算术表达式的中缀形式为 A+B*C-D/E，后缀形式为ABC*+DE/-，其前缀形式为(<font size="2"> <input name="answer1" type="text" maxlength="15" onChange="document.answerForm4765.submit();" value="D" class="optionMulti"></font> )。</span></div>
+<div style="line-height: 150%"><span style="font-size: 12pt; line-height: 150%">A. </span><span style="font-size: 12pt; line-height: 150%">-A+B*C/DE</span></div>
+<div style="line-height: 150%"><span style="font-size: 12pt; line-height: 150%">&nbsp;</span></div>
+<div style="line-height: 150%"><span style="font-size: 12pt; line-height: 150%">B.&nbsp; -A+B*CD/E </span></div>
+<div style="line-height: 150%">&nbsp;</div>
+<div style="line-height: 150%"><span style="font-size: 12pt; line-height: 150%">C. - +*ABC/DE</span></div>
+<div style="line-height: 150%"><span style="font-size: 12pt; line-height: 150%">&nbsp;</span></div>
+<div style="line-height: 150%"><span style="font-size: 12pt; line-height: 150%">D. - +A*BC/DE</span></div>
+      	
+                <input type="hidden" name="problemID" value="4765">      	
+                <input type="hidden" name="assignID" value="902">  
+            </form>  
+             
+        </td>
+        
+   </tr>   
+   
+   
+   <tr>
+        <th style="width:4em">8.</th>
+        <td>
+            <span id="saveTip4777" style="z-index: 100;position: absolute;right:0;" class="badge badge-success"></span>
+            <form method="post" name="answerForm4777" action="stuAnswerHandler.jsp" target="frame_problemhandler" autocomplete="off">
+                <p>5个字符有如下4种编码方案。其中，不是前缀编码的是<input name="answer1" type="text" maxlength="15" onChange="document.answerForm4777.submit();" value="B" class="optionMulti">：</p>
+<p><span style="color: rgb(51, 51, 51); font-family: Arial, Helvetica, sans-serif; font-size: 14px; line-height: 30px;">A．0，10，110，1111</span><br style="margin: 0px; padding: 0px; word-wrap: break-word; color: rgb(51, 51, 51); font-family: Arial, Helvetica, sans-serif; font-size: 14px; line-height: 30px;" />
+<span style="color: rgb(51, 51, 51); font-family: Arial, Helvetica, sans-serif; font-size: 14px; line-height: 30px;">B．11，10，001，101，0001</span><br style="margin: 0px; padding: 0px; word-wrap: break-word; color: rgb(51, 51, 51); font-family: Arial, Helvetica, sans-serif; font-size: 14px; line-height: 30px;" />
+<span style="color: rgb(51, 51, 51); font-family: Arial, Helvetica, sans-serif; font-size: 14px; line-height: 30px;">C．00，010，0110，1000</span><br style="margin: 0px; padding: 0px; word-wrap: break-word; color: rgb(51, 51, 51); font-family: Arial, Helvetica, sans-serif; font-size: 14px; line-height: 30px;" />
+<span style="color: rgb(51, 51, 51); font-family: Arial, Helvetica, sans-serif; font-size: 14px; line-height: 30px;">D．b，c，aa，ac，aba，abb，abc</span></p>
+      	
+                <input type="hidden" name="problemID" value="4777">      	
+                <input type="hidden" name="assignID" value="902">  
+            </form>  
+             
+        </td>
+        
+   </tr>   
+   
+   
+   <tr>
+        <th style="width:4em">9.</th>
+        <td>
+            <span id="saveTip4768" style="z-index: 100;position: absolute;right:0;" class="badge badge-success"></span>
+            <form method="post" name="answerForm4768" action="stuAnswerHandler.jsp" target="frame_problemhandler" autocomplete="off">
+                <p>由带权为3，9，6，2，5的五个叶子结点构成一颗哈夫曼树，则带权路径长度为 <input name="answer1" type="text" maxlength="15" onChange="document.answerForm4768.submit();" value="B" class="optionMulti"></p>
+<p>A. 54</p>
+<p>B. 55</p>
+<p>C. 65</p>
+<p>D. 25</p>
+      	
+                <input type="hidden" name="problemID" value="4768">      	
+                <input type="hidden" name="assignID" value="902">  
+            </form>  
+             
+        </td>
+        
+   </tr>   
+   
+   
+   <tr>
+        <th style="width:4em">10.</th>
+        <td>
+            <span id="saveTip5505" style="z-index: 100;position: absolute;right:0;" class="badge badge-success"></span>
+            <form method="post" name="answerForm5505" action="stuAnswerHandler.jsp" target="frame_problemhandler" autocomplete="off">
+                <p style=";text-indent:0"><span style="font-size: 14px; font-family: 宋体, SimSun;"><span style="font-size: 14px;">有11</span><span style="font-size: 14px;">个叶结点的哈夫曼树共有<span style="font-size: 14px;">&nbsp;<input name="answer1" type="text" maxlength="15" onChange="document.answerForm5505.submit();" value="B" class="optionMulti"> 个</span></span><span style="font-size: 14px;">结点。</span></span></p><p style=";text-indent:0"><span style="font-size: 14px; font-family: 宋体, SimSun;">A.22 &nbsp; &nbsp; &nbsp; B.21 &nbsp; &nbsp; &nbsp; C.20 &nbsp; &nbsp; &nbsp; D.19</span></p><p><br/></p>
+      	
+                <input type="hidden" name="problemID" value="5505">      	
+                <input type="hidden" name="assignID" value="902">  
+            </form>  
+             
+        </td>
+        
+   </tr>   
+    
+ </tbody>
+</table>
+ 
+
+                    	
+
+                    
+                    
+
+
+
+<a name="An_Program" id="An_Program"></a>
+
+<i class="fas fa-pencil-alt"></i><b> 编程题</b>
+
+<table class="table table-striped">
+    
+    <thead>
+        <tr> 
+            <th style="width:4em">#</th>
+            <th width="38%"> 题目</th>   
+            <th style="width:5em"> 分值</th>  
+            <th> 批阅信息</th>  
+        </tr>
+    </thead>
+   
+    <tbody>
+
+        <tr> 
+            <th>1.</th>
+            <td>
+                
+                            <a href="programList.jsp?proNum=1&courseID=25&assignID=902"> 树叶节点遍历（树-基础题）</a>
+                
+                
+            </td>
+            <td>20.00</td>
+            <td>
+                
+                    <a href="/downloadFile?filename=aQnwMO2V54MloHdkDYcwqrpziX0ctfbHqwd51iVv2rBvNPWbEOctORQuQy1yiuqIRuUs1JT-xnA0uBqkd1xf4ht588_Im3TsXjccH8bPPZtZmZXvcHZdXA">下载源文件</a>
+                    <hr>
+                
+                <small><font color="#3366CC">得分20.00&nbsp;&nbsp;&nbsp;最后一次提交时间:2021-05-01 18:34:28</font><br><br>共有测试数据:5<br>平均占用内存:1.227K&nbsp;&nbsp;&nbsp;&nbsp;平均CPU时间:0.00382S&nbsp;&nbsp;&nbsp;&nbsp;平均墙钟时间:0.00379S<br><br><table border="0" cellpadding="0" cellspacing="0" width=400><tr><td><b>测试数据</b></td><td><b>评判结果</b></td></tr><tr><td>测试数据1</td><td>完全正确</td></tr><tr><td>测试数据2</td><td>完全正确</td></tr><tr><td>测试数据3</td><td>完全正确</td></tr><tr><td>测试数据4</td><td>完全正确</td></tr><tr><td>测试数据5</td><td>完全正确</td></tr></table></small>
+                 <div align="right">
+                     
+                     
+                        <a href="judgeDetailsRedirect.jsp?assignID=902&problemID=4757" target="_blank" class="btn btn-light btn-sm" role="button" aria-pressed="true">
+                            详细  <i class="fas fa-chevron-circle-right"></i>
+                        </a>
+                     
+                     
+                 </div>
+            </td>            
+
+        </tr>
+    
+        <tr> 
+            <th>2.</th>
+            <td>
+                
+                            <a href="programList.jsp?proNum=2&courseID=25&assignID=902"> 词频统计（树实现）</a>
+                
+                
+            </td>
+            <td>20.00</td>
+            <td>
+                
+                    <a href="/downloadFile?filename=aQnwMO2V54MloHdkDYcwqrpziX0ctfbHqwd51iVv2rBvNPWbEOctORQuQy1yiuqIRuUs1JT-xnCv_-Plyv0eHi1ILnj6eAUUFV47Z3-5ZjQ">下载源文件</a>
+                    <hr>
+                
+                <small><font color="#3366CC">得分20.00&nbsp;&nbsp;&nbsp;最后一次提交时间:2021-05-01 21:01:00</font><br><br>共有测试数据:5<br>平均占用内存:1.226K&nbsp;&nbsp;&nbsp;&nbsp;平均CPU时间:0.00401S&nbsp;&nbsp;&nbsp;&nbsp;平均墙钟时间:0.00399S<br><br><table border="0" cellpadding="0" cellspacing="0" width=400><tr><td><b>测试数据</b></td><td><b>评判结果</b></td></tr><tr><td>测试数据1</td><td>完全正确</td></tr><tr><td>测试数据2</td><td>完全正确</td></tr><tr><td>测试数据3</td><td>完全正确</td></tr><tr><td>测试数据4</td><td>完全正确</td></tr><tr><td>测试数据5</td><td>完全正确</td></tr></table></small>
+                 <div align="right">
+                     
+                     
+                        <a href="judgeDetailsRedirect.jsp?assignID=902&problemID=4779" target="_blank" class="btn btn-light btn-sm" role="button" aria-pressed="true">
+                            详细  <i class="fas fa-chevron-circle-right"></i>
+                        </a>
+                     
+                     
+                 </div>
+            </td>            
+
+        </tr>
+    
+        <tr> 
+            <th>3.</th>
+            <td>
+                
+                            <a href="programList.jsp?proNum=3&courseID=25&assignID=902"> 计算器（表达式计算-表达式树实现）</a>
+                
+                
+            </td>
+            <td>20.00</td>
+            <td>
+                
+                    <a href="/downloadFile?filename=aQnwMO2V54MloHdkDYcwqrpziX0ctfbHqwd51iVv2rBvNPWbEOctORQuQy1yiuqIRuUs1JT-xnCv_-Plyv0eHigkPKwGPSOPzqjTd-Xw7ePJj95lEWoyIw">下载源文件</a>
+                    <hr>
+                
+                <small><font color="#3366CC">得分20.00&nbsp;&nbsp;&nbsp;最后一次提交时间:2021-05-01 23:22:48</font><br>成功编译,但有警告信息.<br>shishishis.c: In function &apos;main&apos;:<br>shishishis.c:79:1: warning: implicit declaration of function &apos;gets&apos; [-Wimplicit-function-declaration]<br> gets(s); <br> ^<br>shishishis.c:82:6: warning: unused variable &apos;len&apos; [-Wunused-variable]<br>  int len = strlen(s);<br>      ^<br>/tmp/cc6Y3RAK.o: In function `main&apos;:<br>shishishis.c:(.text.startup+0x67): warning: the `gets&apos; function is dangerous and should not be used.<br>共有测试数据:5<br>平均占用内存:1.227K&nbsp;&nbsp;&nbsp;&nbsp;平均CPU时间:0.00483S&nbsp;&nbsp;&nbsp;&nbsp;平均墙钟时间:0.00481S<br><br><table border="0" cellpadding="0" cellspacing="0" width=400><tr><td><b>测试数据</b></td><td><b>评判结果</b></td></tr><tr><td>测试数据1</td><td>完全正确</td></tr><tr><td>测试数据2</td><td>完全正确</td></tr><tr><td>测试数据3</td><td>完全正确</td></tr><tr><td>测试数据4</td><td>完全正确</td></tr><tr><td>测试数据5</td><td>完全正确</td></tr></table></small>
+                 <div align="right">
+                     
+                     
+                        <a href="judgeDetailsRedirect.jsp?assignID=902&problemID=4778" target="_blank" class="btn btn-light btn-sm" role="button" aria-pressed="true">
+                            详细  <i class="fas fa-chevron-circle-right"></i>
+                        </a>
+                     
+                     
+                 </div>
+            </td>            
+
+        </tr>
+    
+        <tr> 
+            <th>4.</th>
+            <td>
+                
+                            <a href="programList.jsp?proNum=4&courseID=25&assignID=902"> 网络打印机选择</a>
+                
+                
+            </td>
+            <td>20.00</td>
+            <td>
+                
+                    <a href="/downloadFile?filename=aQnwMO2V54MloHdkDYcwqrpziX0ctfbHqwd51iVv2rBvNPWbEOctORQuQy1yiuqIRuUs1JT-xnDWFU7l_8bCApCBAXOY3845RbZ3iKvOgxE">下载源文件</a>
+                    <hr>
+                
+                <small><font color="#3366CC">得分20.00&nbsp;&nbsp;&nbsp;最后一次提交时间:2021-05-02 13:26:58</font><br><br>共有测试数据:4<br>平均占用内存:1.694K&nbsp;&nbsp;&nbsp;&nbsp;平均CPU时间:0.00561S&nbsp;&nbsp;&nbsp;&nbsp;平均墙钟时间:0.00559S<br><br><table border="0" cellpadding="0" cellspacing="0" width=400><tr><td><b>测试数据</b></td><td><b>评判结果</b></td></tr><tr><td>测试数据1</td><td>完全正确</td></tr><tr><td>测试数据2</td><td>完全正确</td></tr><tr><td>测试数据3</td><td>完全正确</td></tr><tr><td>测试数据4</td><td>完全正确</td></tr></table></small>
+                 <div align="right">
+                     
+                     
+                        <a href="judgeDetailsRedirect.jsp?assignID=902&problemID=5754" target="_blank" class="btn btn-light btn-sm" role="button" aria-pressed="true">
+                            详细  <i class="fas fa-chevron-circle-right"></i>
+                        </a>
+                     
+                     
+                 </div>
+            </td>            
+
+        </tr>
+    
+        <tr> 
+            <th>5.</th>
+            <td>
+                
+                            <a href="programList.jsp?proNum=5&courseID=25&assignID=902"> 基于Huffman码的文件压缩和解压工具（选做，本题只测试压缩功能）</a>
+                
+                
+            </td>
+            <td>0.00</td>
+            <td>
+                
+                <small>还未提交源文件</small>
+                 <div align="right">
+                     
+                     
+                        <a href="judgeDetailsRedirect.jsp?assignID=902&problemID=5794" target="_blank" class="btn btn-light btn-sm" role="button" aria-pressed="true">
+                            详细  <i class="fas fa-chevron-circle-right"></i>
+                        </a>
+                     
+                     
+                 </div>
+            </td>            
+
+        </tr>
+    
+        <tr> 
+            <th>6.</th>
+            <td>
+                
+                            <a href="programList.jsp?proNum=6&courseID=25&assignID=902"> 基于Huffman码的文件压缩和解压工具（选做，本题只测试解压功能）</a>
+                
+                
+            </td>
+            <td>0.00</td>
+            <td>
+                
+                <small>还未提交源文件</small>
+                 <div align="right">
+                     
+                     
+                        <a href="judgeDetailsRedirect.jsp?assignID=902&problemID=5795" target="_blank" class="btn btn-light btn-sm" role="button" aria-pressed="true">
+                            详细  <i class="fas fa-chevron-circle-right"></i>
+                        </a>
+                     
+                     
+                 </div>
+            </td>            
+
+        </tr>
+    
+ 
+    </tbody>
+</table>
+                    	
+
+                    
+                    
+
+
+
+<a name="An_ProgramFP" id="An_ProgramFP"></a>
+
+
+<i class="fas fa-pencil-alt"></i><b> 程序片段编程题</b>
+
+
+<table  class="table table-striped">
+    
+    <thead>
+        <tr> 
+            <th style="width:4em">#</th>
+            <th width="38%"> 题目</th>   
+            <th style="width:5em"> 分值</th>  
+            <th> 批阅信息</th>  
+        </tr>
+    </thead>
+   
+    <tbody>
+    
+         <tr> 
+           <th>1.</th>
+           <td>
+                
+                           <a href="programFillGapList.jsp?proNum=1&courseID=25&assignID=902"> 实验： 树的构造与遍历</a>
+                
+                
+           </td>
+           <td>20.00</td>
+           <td>
+                
+                   <a href="/downloadFile?filename=aQnwMO2V54MloHdkDYcwqrpziX0ctfbHqwd51iVv2rBvNPWbEOctORQuQy1yiuqIRuUs1JT-xnCbiIObSGJ3HBt588_Im3Ts-egRKUM9Q3A">下载源文件</a>
+                    <hr>
+                
+                    <small><font color="#3366CC">得分20.00&nbsp;&nbsp;&nbsp;最后一次提交时间:2021-05-06 15:49:14</font><br>成功编译,但有警告信息.<br>main.c: In function &apos;statCount&apos;:<br>main.c:64:4: warning: array subscript has type &apos;char&apos; [-Wchar-subscripts]<br>    Ccount[line[i]]++;<br>    ^<br>main.c: In function &apos;createHTree&apos;:<br>main.c:85:29: warning: unused variable &apos;ww&apos; [-Wunused-variable]<br>  for( i = 0; i &lt; 128; i++)<br>                             ^<br>main.c: In function &apos;visitHtree&apos;:<br>main.c:178:3: warning: array subscript has type &apos;char&apos; [-Wchar-subscripts]<br>   return;<br>   ^<br>main.c: In function &apos;atoHZIP&apos;:<br>main.c:215:4: warning: array subscript has type &apos;char&apos; [-Wchar-subscripts]<br>  int hc = 0;int i;<br>    ^<br>共有测试数据:4<br>平均占用内存:1.226K&nbsp;&nbsp;&nbsp;&nbsp;平均运行时间:0.00544S<br><br><table border="0" cellpadding="0" cellspacing="0" width=400><tr><td><b>测试数据</b></td><td><b>评判结果</b></td></tr><tr><td>测试数据1</td><td>完全正确</td></tr><tr><td>测试数据2</td><td>完全正确</td></tr><tr><td>测试数据3</td><td>完全正确</td></tr><tr><td>测试数据4</td><td>完全正确</td></tr></table></small>
+                    <div align="right">
+                       
+                       
+                        <a href="judgeDetailsRedirect.jsp?assignID=902&problemID=5307" target="_blank" class="btn btn-light btn-sm" role="button" aria-pressed="true">
+                            详细  <i class="fas fa-chevron-circle-right"></i></a>
+                       
+                   </div>
+           </td>            
+
+         </tr>
+     
+    </tbody>
+</table>
+                     
+
+        		
+
+
+                   
+           
+        </div>
+   
+    </div>
+    
+    
+    
+    
+    
+    
+</div>
+
+<IFRAME name="frame_problemhandler" frameBorder="0" height="0" marginHeight="0" marginWidth="0" width="0"></IFRAME>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+    <IFRAME src="/includes/stayalive.jsp"  frameBorder=0 height=0 marginHeight=0 marginWidth=0 width=0></IFRAME>
+    
+    <footer id="cgfooter" style="min-height: 70px; width: 100%; padding: 15px;position: relative;bottom: 0;" class="bg-light mt-5">
+      <div class="container text-center">
+       
+              <p><span style="color: rgb(102, 102, 153);">北京航空航天大学 计算机学院</span></p><p><span style="color: rgb(102, 102, 153);">若重置密码，请与当前的任课教师联系</span></p>
+      </div>
+    </footer>
+    
+  
+  
+
+
+    
+
+
+
+
+
+
+
+
+
+
+<script src="/indexcs/js/jquery.js"></script>
+<script>
+    function CGcheckOnline() {
+        setTimeout("doOnlineCheck()", 50000);
+    }
+    
+    function doOnlineCheck() {
+        
+        $.ajax({
+            url: "/includes/cgkeepalive.jsp",
+            data:{userid:"21049"},
+            type:"POST",
+            dataType:"text",
+            timeout:20000,
+            success: function(msg) {
+                var retMsg = msg.trim();
+                if(retMsg === "null") {
+                    alert("与服务器的会话超时，请注销重新登录！");
+                } else if(retMsg === "false") {
+                    alert("用户ID发生变化，请检查是否使用其他账号登录本机！");
+                }
+                CGcheckOnline();
+            },
+            error: function(XMLHttpRequest, textStatus, erroThrown) {
+                alert("可能由于网络问题与服务器的连接断开，请尝试注销重新登录！");
+                CGcheckOnline();
+            }
+        });
+    }
+    
+    $(document).ready(function () {
+        //Increment the idle time counter every minute.
+        CGcheckOnline();
+    });
+
+    
+</script>
+    
+        
+
+
+
+
+
+
+
+
+
+
+
+<script>
+    
+    $('body').bind('copy',function(e) {
+        e.preventDefault(); return false;
+    });
+</script> 
+    
+
+
+</body>
+</html>
+

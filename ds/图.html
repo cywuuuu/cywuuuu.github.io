@@ -1,0 +1,945 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+    <meta charset="GBK">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">    
+    <META http-equiv="Content-Type" content="text/html; charset=GBK">
+    <meta http-equiv="Expires" CONTENT="0"> 
+    <meta http-equiv="Cache-Control" CONTENT="no-cache"> 
+    <meta http-equiv="Pragma" CONTENT="no-cache"> 
+    <link rel="shortcut icon" href="/images/cgicon.png">
+
+    <TITLE>CourseGrading：程序设计 自动评分 自动评判 代码相似性 上机考试</TITLE>
+    <script language="javascript">   
+        history.pushState(null, null, document.URL);
+        window.addEventListener('popstate', function () {
+                history.pushState(null, null, document.URL);
+        });
+    </script>
+    <!-- Bootstrap core CSS -->
+    <link href="/sv2/css/bootstrap4/bootstrap.min.css" rel="stylesheet">
+    <link href="/sv2/css/bootstrap4/docs.min.css" rel="stylesheet">    
+    
+   
+    <link href="/sv2/css/bootstrap4/fontawesome/css/all.css" rel="stylesheet">
+    <link href="/sv2/css/sticky-footer-navbar.css" rel="stylesheet">
+    <link href="/css/cg_sv2.css" rel="stylesheet">
+    
+    <script src="/sv2/css/bootstrap4/jquery-3.5.1.min.js"></script>
+    <script src="/sv2/css/bootstrap4/popper.min.js"></script>
+    
+    <script src="/sv2/css/bootstrap4/bootstrap.bundle.min.js"></script>
+    <script src="/sv2/css/bootstrap4/docs.min.js"></script>
+
+    <link href="/js/bootstrap/bootstrap-select.min.css" rel="stylesheet">
+    <script src="/js/bootstrap/bootstrap-select.min.js"></script>
+  </head>
+
+<body>
+<nav class="navbar navbar-expand-lg navbar-light" style="background-color: #e3f2fd;">
+    
+    <a class="navbar-brand" href="/index.jsp"> <img src="/userfiles/skin/logo.png" border="0" height="25"></a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item active">
+                <a class="nav-link" href="/includes/redirect.jsp?tab=0">首页 <span class="sr-only">(current)</span></a>
+            </li>
+            
+            <li class="nav-item">
+                <a class="nav-link" href="/includes/redirect.jsp?tab=-1">课程信息</a>
+            </li>
+            
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="/includes/redirect.jsp?tab=-2">在线作业</a>
+            </li>
+            
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="/includes/redirect.jsp?tab=-3">在线考试</a>
+            </li>  
+            
+            
+                
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="/includes/redirect.jsp?tab=-4">在线答疑</a>
+            </li>    
+            
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="/includes/redirect.jsp?tab=-5">成绩查询</a>
+            </li>               
+                      
+
+                     
+            
+                                   
+
+        </ul>
+       
+        <form class="form-inline my-2 my-lg-0" name="courseForm" method="post" action="">
+            
+            
+            <ul class="navbar-nav mr-auto">
+
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                       <i class="fas fa-user"></i> 陈一文
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="userDropdown">
+                      <a class="dropdown-item" href="/includes/redirect.jsp?tab=-6"><i class="far fa-user"></i>个人信息</a>
+                    <a class="dropdown-item" href="/login/loginproc.jsp?logout=true"><i class="fas fa-sign-out-alt"></i> 注销</a>
+
+                    </div>
+                </li>
+                <!--
+                <li class="nav-item active">
+                    <a class="nav-link" href="help.jsp" target="_blank"><i class="fas fa-question-circle"></i> 帮助</a>
+                </li>
+                -->
+            </ul>
+            <label for="doChangeCourse" class="sr-only">切换课程</label>
+
+            <input type="hidden" name="doChangeCourse" value="true">
+            <select class="form-control" name="changeCourse" onchange="document.courseForm.submit()">
+              
+              <option value="25" selected>数据结构与程序设计（信息大类）</option>
+                    
+            </select>
+            
+            <ul class="navbar-nav mr-auto">
+                <li> <a class="nav-link" href="/sv2/indexexp/contest/index.jsp?my=true&contestCID=25"><i class="fas fa-medal text-danger"></i> 比赛</a></li>
+                
+                <li class="nav-item">
+                    <a class="nav-link" href="/acm/index.jsp" target="_blank"><i class="fas fa-code text-danger"></i> OnlineJudge</a>                    
+                </li>
+                
+                
+                
+                    <a class="nav-link" href="/graduation/index.jsp"><i class="fa fa-user-graduate text-danger"></i> 毕业设计</a>  
+                
+                    
+                 
+            </ul>
+            
+        </form>
+  </div>
+</nav>
+  
+
+
+
+<SCRIPT language=JavaScript src="../includes/common.js"></SCRIPT>
+
+<div class="container-fluid">
+    <div class="row mr-2 ml-1 mt-3">
+        <div class="col-2">
+           
+
+
+
+
+            <h6 class="d-flex justify-content-between align-items-center">
+                <span class="text-muted"><strong><i class="far fa-clock"></i> 当前作业</strong></span>
+                
+            </h6>
+            <div class="list-group list-group-flush mb-4">
+                
+                
+                  
+                        <a href="index.jsp?courseID=25&assignID=904" class="list-group-item list-group-item-action active">
+                            <i class="fas fa-angle-double-right"></i> 20级第七次作业（图）
+                            
+                        </a>
+                            
+                        
+                  
+                  
+                        <a href="index.jsp?courseID=25&assignID=903" class="list-group-item list-group-item-action">
+                            <i class="fas fa-angle-double-right"></i> 20级第六次作业（查找与排序）
+                            
+                        </a>
+                            
+                        
+                  
+                  
+                        <a href="index.jsp?courseID=25&assignID=902" class="list-group-item list-group-item-action">
+                            <i class="fas fa-angle-double-right"></i> 20级第五次作业（树）
+                            
+                        </a>
+                            
+                        
+                  
+                  
+                        <a href="index.jsp?courseID=25&assignID=895" class="list-group-item list-group-item-action">
+                            <i class="fas fa-angle-double-right"></i> 2020级（信息大类）数据结构综合作业
+                            
+                        </a>
+                            
+                        
+                  
+            </div>
+
+
+            <h6 class="d-flex justify-content-between align-items-center">
+                <span class="text-muted"><strong><i class="fas fa-history"></i> 历史作业</strong></span>                
+            </h6>
+            <div class="list-group list-group-flush">
+                
+                  
+                    <a href="index.jsp?courseID=25&assignID=901" class="list-group-item list-group-item-action">
+                          <i class="fas fa-angle-double-right"></i> 20级第四次作业
+                          
+                    </a>                                 
+                        
+              
+                  
+                    <a href="index.jsp?courseID=25&assignID=900" class="list-group-item list-group-item-action">
+                          <i class="fas fa-angle-double-right"></i> 20级第三次作业
+                          
+                    </a>                                 
+                        
+              
+                  
+                    <a href="index.jsp?courseID=25&assignID=899" class="list-group-item list-group-item-action">
+                          <i class="fas fa-angle-double-right"></i> 20级第二次作业
+                          
+                    </a>                                 
+                        
+              
+                  
+                    <a href="index.jsp?courseID=25&assignID=896" class="list-group-item list-group-item-action">
+                          <i class="fas fa-angle-double-right"></i> 20级第一次作业
+                          
+                    </a>                                 
+                        
+              
+                
+            </div>
+            
+      
+      
+        
+        </div>
+        <div class="col-10">
+            <div class="shadow-sm p-3 mb-3 bg-light rounded">
+                
+                    <b>20级第七次作业（图）</b>
+                    
+                    作业时间： <b>2021-05-20 18:00:00</b> 至 <b>2021-06-20 23:55:00</b>
+                    
+                
+                <hr>
+                主要考查对图的掌握情况，请用相关知识完成本次作业。
+            </div>
+            
+
+               
+            
+                
+            
+                
+               
+                      
+            	
+
+                    
+                    
+
+
+
+<style type="text/css">
+<!--
+
+.cloze {BORDER-RIGHT: rgb(0,0,0) 0px solid; BORDER-TOP: rgb(0,0,0) 0px solid; FONT-SIZE: 10pt; BORDER-LEFT: rgb(0,0,0) 0px solid; WIDTH: 250px; BORDER-BOTTOM: rgb(0,0,0) 1px solid; HEIGHT: 20px}
+-->
+</style>
+
+<i class="fas fa-pencil-alt"></i><b> 填空题</b>
+<table  class="table table-striped">
+    <tbody>
+		
+			  
+   
+   <tr>
+        <th style="width:4em">1.</th>
+        <td>
+            <span id="saveTip4814" style="z-index: 100;position: absolute;right:0;" class="badge badge-success"></span>
+            <form method="post" name="answerForm4814" action="stuAnswerHandler.jsp" target="frame_problemhandler" autocomplete="off">
+                <p class="MsoNormal" style="text-align: left; margin: 0cm 0cm 0pt;">图中顶点的度是指依附于该顶点的边的数目，有向图中的顶点还有出度和入度之分。在图G 的邻接表表示中，每个顶点邻接表中所含的结点数，对于无向图来说等于该顶点的<input name="answer1" type="text" onChange="document.answerForm4814.submit();" value="度" class=cloze> ；对于有向图来说等于该顶点的 <input name="answer2" type="text" onChange="document.answerForm4814.submit();" value="出度" class=cloze> 。</p>
+                <input type="hidden" name="problemID" value="4814">      	
+                <input type="hidden" name="assignID" value="904">  
+            </form>
+            
+        </td>
+       
+   </tr>  
+		 
+    
+   <tr>
+        <th style="width:4em">2.</th>
+        <td>
+            <span id="saveTip4824" style="z-index: 100;position: absolute;right:0;" class="badge badge-success"></span>
+            <form method="post" name="answerForm4824" action="stuAnswerHandler.jsp" target="frame_problemhandler" autocomplete="off">
+                <p>有向图G用邻接矩阵存储，其第i行的所有非无穷大元素个数等于顶点i的<input name="answer1" type="text" onChange="document.answerForm4824.submit();" value="出度" class=cloze></p>
+                <input type="hidden" name="problemID" value="4824">      	
+                <input type="hidden" name="assignID" value="904">  
+            </form>
+            
+        </td>
+       
+   </tr>  
+		 
+    
+   <tr>
+        <th style="width:4em">3.</th>
+        <td>
+            <span id="saveTip4829" style="z-index: 100;position: absolute;right:0;" class="badge badge-success"></span>
+            <form method="post" name="answerForm4829" action="stuAnswerHandler.jsp" target="frame_problemhandler" autocomplete="off">
+                <p>&nbsp;假设图G可选择的存储方案有邻接矩阵和邻接表两种，若图G为稀疏图，则G采用&nbsp; <input name="answer1" type="text" onChange="document.answerForm4829.submit();" value="邻接矩阵" class=cloze> 存储较省空间</p>
+                <input type="hidden" name="problemID" value="4829">      	
+                <input type="hidden" name="assignID" value="904">  
+            </form>
+            
+        </td>
+       
+   </tr>  
+		 
+    
+   <tr>
+        <th style="width:4em">4.</th>
+        <td>
+            <span id="saveTip4828" style="z-index: 100;position: absolute;right:0;" class="badge badge-success"></span>
+            <form method="post" name="answerForm4828" action="stuAnswerHandler.jsp" target="frame_problemhandler" autocomplete="off">
+                <p>&nbsp;如果n个顶点的图是一个环，则它有&nbsp;&nbsp;&nbsp; <input name="answer1" type="text" onChange="document.answerForm4828.submit();" value="n" class=cloze>&nbsp;&nbsp;&nbsp;&nbsp;棵生成树。</p>
+                <input type="hidden" name="problemID" value="4828">      	
+                <input type="hidden" name="assignID" value="904">  
+            </form>
+            
+        </td>
+       
+   </tr>  
+		 
+    
+   <tr>
+        <th style="width:4em">5.</th>
+        <td>
+            <span id="saveTip4831" style="z-index: 100;position: absolute;right:0;" class="badge badge-success"></span>
+            <form method="post" name="answerForm4831" action="stuAnswerHandler.jsp" target="frame_problemhandler" autocomplete="off">
+                <p>&nbsp;<img src="/userfiles/image/2020/1589598427779009051.png" title="1589598427779009051.png" alt="image.png" width="223" height="127" style="width: 223px; height: 127px;"/></p><p>对于上图所示的无向连通图，若采用普里姆（Prim）算法求其最小生成树，假设第一个选择加入最小生成树的顶点为V1，则最后一条加入最小生成树的边的权值为 <input name="answer1" type="text" onChange="document.answerForm4831.submit();" value="1" class=cloze>&nbsp; &nbsp;。</p>
+                <input type="hidden" name="problemID" value="4831">      	
+                <input type="hidden" name="assignID" value="904">  
+            </form>
+            
+        </td>
+       
+   </tr>  
+		 
+    
+   <tr>
+        <th style="width:4em">6.</th>
+        <td>
+            <span id="saveTip4830" style="z-index: 100;position: absolute;right:0;" class="badge badge-success"></span>
+            <form method="post" name="answerForm4830" action="stuAnswerHandler.jsp" target="frame_problemhandler" autocomplete="off">
+                <p><img src="/userfiles/image/2020/1589598427779009051.png" title="1589598427779009051.png" alt="image.png" width="223" height="127" style="white-space: normal; width: 223px; height: 127px;"/></p><p>&nbsp;对于上图所示的无向连通图，若采用克鲁斯卡尔（Kruskal）算法求其最小生成树，则最后选择加入最小生成树的边的权值为&nbsp; <input name="answer1" type="text" onChange="document.answerForm4830.submit();" value="11" class=cloze> 。</p>
+                <input type="hidden" name="problemID" value="4830">      	
+                <input type="hidden" name="assignID" value="904">  
+            </form>
+            
+        </td>
+       
+   </tr>  
+		 
+    
+   <tr>
+        <th style="width:4em">7.</th>
+        <td>
+            <span id="saveTip4820" style="z-index: 100;position: absolute;right:0;" class="badge badge-success"></span>
+            <form method="post" name="answerForm4820" action="stuAnswerHandler.jsp" target="frame_problemhandler" autocomplete="off">
+                <p>若一个非连通的无向图最多有28条边，则该无向图至少有<input name="answer1" type="text" onChange="document.answerForm4820.submit();" value="9" class=cloze> 个顶点。</p>
+                <input type="hidden" name="problemID" value="4820">      	
+                <input type="hidden" name="assignID" value="904">  
+            </form>
+            
+        </td>
+       
+   </tr>  
+		 
+    
+   <tr>
+        <th style="width:4em">8.</th>
+        <td>
+            <span id="saveTip4821" style="z-index: 100;position: absolute;right:0;" class="badge badge-success"></span>
+            <form method="post" name="answerForm4821" action="stuAnswerHandler.jsp" target="frame_problemhandler" autocomplete="off">
+                <p>已知某有向图G=(V,E)，其中V={v1,v2,v3,v4,v5,v6}，E={&lt;v1,v2&gt;, &lt;v1,v4&gt;, &lt;v2,v6&gt;, &lt;v3,v1&gt;, &lt;v3,v4&gt;, &lt;v4,v5&gt;, &lt;v5,v2&gt;, &lt;v5,v6&gt;}，G的拓扑序列是<input name="answer1" type="text" onChange="document.answerForm4821.submit();" value="v3v1v4v5v2v6" class=cloze>。（输出序列中不要有空格、标点符号等，保持小写，输出样例：v1v2v3v4v5v6<font size="3">）</font></p>
+                <input type="hidden" name="problemID" value="4821">      	
+                <input type="hidden" name="assignID" value="904">  
+            </form>
+            
+        </td>
+       
+   </tr>  
+		 
+    
+   <tr>
+        <th style="width:4em">9.</th>
+        <td>
+            <span id="saveTip4813" style="z-index: 100;position: absolute;right:0;" class="badge badge-success"></span>
+            <form method="post" name="answerForm4813" action="stuAnswerHandler.jsp" target="frame_problemhandler" autocomplete="off">
+                <p>用迪杰斯特拉算法计算下图中A到G的最短路径为<input name="answer1" type="text" onChange="document.answerForm4813.submit();" value="ABEG" class=cloze>。（输出序列中不要有空格、标点符号等，保持大写，输出样例：ABCDEFG）</p>
+<p><font size="3"><img width="231" height="221" alt="" src="/userfiles/image/shortest5925.png" /></font></p>
+                <input type="hidden" name="problemID" value="4813">      	
+                <input type="hidden" name="assignID" value="904">  
+            </form>
+            
+        </td>
+       
+   </tr>  
+		 
+    
+   <tr>
+        <th style="width:4em">10.</th>
+        <td>
+            <span id="saveTip4812" style="z-index: 100;position: absolute;right:0;" class="badge badge-success"></span>
+            <form method="post" name="answerForm4812" action="stuAnswerHandler.jsp" target="frame_problemhandler" autocomplete="off">
+                <p>手工计算如下图所示的AOE网中的关键路径为<input name="answer1" type="text" onChange="document.answerForm4812.submit();" value="a2a3a5a9a13a14a15" class=cloze>（输出序列中不要有空格、标点符号等，输出样例：a1a2a15a10）。</p>
+<p><img width="464" height="249" alt="" src="/userfiles/image/AOE25925.png" style="font-size: medium;" /></p>
+                <input type="hidden" name="problemID" value="4812">      	
+                <input type="hidden" name="assignID" value="904">  
+            </form>
+            
+        </td>
+       
+   </tr>  
+		 
+     
+  
+ </tbody>
+</table>
+                    	
+
+                    
+                    
+
+
+
+<style type="text/css">
+<!--
+.optionMulti {BORDER-RIGHT: rgb(0,0,0) 0px solid; BORDER-TOP: rgb(0,0,0) 0px solid;  BORDER-LEFT: rgb(0,0,0) 0px solid; font-size: 16px; WIDTH: 160px; BORDER-BOTTOM: rgb(0,0,0) 1px solid; }
+-->
+</style>
+
+
+
+<i class="fas fa-pencil-alt"></i><b> 选择题</b>
+
+<table  class="table table-striped">
+    <tbody>
+			  
+   
+   
+   <tr>
+        <th style="width:4em">1.</th>
+        <td>
+            <span id="saveTip4817" style="z-index: 100;position: absolute;right:0;" class="badge badge-success"></span>
+            <form method="post" name="answerForm4817" action="stuAnswerHandler.jsp" target="frame_problemhandler" autocomplete="off">
+                <p>对含有n条边的无向图而言，其邻接表中边数为<input name="answer1" type="text" maxlength="15" onChange="document.answerForm4817.submit();" value="B" class="optionMulti">。</p>
+<p>A.n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; B. 2n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; C. n/2&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; D. n&times;n</p>
+      	
+                <input type="hidden" name="problemID" value="4817">      	
+                <input type="hidden" name="assignID" value="904">  
+            </form>  
+             
+        </td>
+        
+   </tr>   
+   
+   
+   <tr>
+        <th style="width:4em">2.</th>
+        <td>
+            <span id="saveTip4818" style="z-index: 100;position: absolute;right:0;" class="badge badge-success"></span>
+            <form method="post" name="answerForm4818" action="stuAnswerHandler.jsp" target="frame_problemhandler" autocomplete="off">
+                <p>若具有n个顶点的无向图采用邻接矩阵存储方法，该邻接矩阵一定为一个 <input name="answer1" type="text" maxlength="15" onChange="document.answerForm4818.submit();" value="B" class="optionMulti">。</p>
+<p>A.一般矩阵&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; B.对称矩阵&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; C.对角矩阵&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; D.稀疏矩阵</p>
+      	
+                <input type="hidden" name="problemID" value="4818">      	
+                <input type="hidden" name="assignID" value="904">  
+            </form>  
+             
+        </td>
+        
+   </tr>   
+   
+   
+   <tr>
+        <th style="width:4em">3.</th>
+        <td>
+            <span id="saveTip4823" style="z-index: 100;position: absolute;right:0;" class="badge badge-success"></span>
+            <form method="post" name="answerForm4823" action="stuAnswerHandler.jsp" target="frame_problemhandler" autocomplete="off">
+                <p>&nbsp;</p>
+<p style="margin: 0cm 0cm 0pt"><span style="font-family: 宋体; mso-ascii-font-family: Calibri; mso-ascii-theme-font: minor-latin; mso-fareast-font-family: 宋体; mso-fareast-theme-font: minor-fareast; mso-hansi-font-family: Calibri; mso-hansi-theme-font: minor-latin"><font size="3">有</font></span><span lang="EN-US"><font size="3" face="Calibri">8</font></span><span style="font-family: 宋体; mso-ascii-font-family: Calibri; mso-ascii-theme-font: minor-latin; mso-fareast-font-family: 宋体; mso-fareast-theme-font: minor-fareast; mso-hansi-font-family: Calibri; mso-hansi-theme-font: minor-latin"><font size="3">个顶点的无向图最多有<input name="answer1" type="text" maxlength="15" onChange="document.answerForm4823.submit();" value="B" class="optionMulti"></font></span><span style="font-family: 宋体; mso-ascii-font-family: Calibri; mso-ascii-theme-font: minor-latin; mso-fareast-font-family: 宋体; mso-fareast-theme-font: minor-fareast; mso-hansi-font-family: Calibri; mso-hansi-theme-font: minor-latin"><font size="3">条边。</font></span></p>
+<p>&nbsp;<span lang="EN-US"><font size="3" face="Calibri">A. 14&nbsp;&nbsp;&nbsp;&nbsp; B. 28&nbsp;&nbsp;&nbsp;&nbsp; C. 56&nbsp;&nbsp;&nbsp;&nbsp; D. 112</font></span></p>
+<p>&nbsp;</p>
+      	
+                <input type="hidden" name="problemID" value="4823">      	
+                <input type="hidden" name="assignID" value="904">  
+            </form>  
+             
+        </td>
+        
+   </tr>   
+   
+   
+   <tr>
+        <th style="width:4em">4.</th>
+        <td>
+            <span id="saveTip4822" style="z-index: 100;position: absolute;right:0;" class="badge badge-success"></span>
+            <form method="post" name="answerForm4822" action="stuAnswerHandler.jsp" target="frame_problemhandler" autocomplete="off">
+                <p>在一个图中，所有顶点的度数之和等于图的边数的<input name="answer1" type="text" maxlength="15" onChange="document.answerForm4822.submit();" value="C" class="optionMulti"> 倍。</p>
+<p>A. 1/2&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; B.&nbsp;1&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; C. 2&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; D. 4</p>
+      	
+                <input type="hidden" name="problemID" value="4822">      	
+                <input type="hidden" name="assignID" value="904">  
+            </form>  
+             
+        </td>
+        
+   </tr>   
+   
+   
+   <tr>
+        <th style="width:4em">5.</th>
+        <td>
+            <span id="saveTip4826" style="z-index: 100;position: absolute;right:0;" class="badge badge-success"></span>
+            <form method="post" name="answerForm4826" action="stuAnswerHandler.jsp" target="frame_problemhandler" autocomplete="off">
+                <p>图的深度优先遍历类似于二叉树的<input name="answer1" type="text" maxlength="15" onChange="document.answerForm4826.submit();" value="A" class="optionMulti">。</p><p class="reader-word-layer reader-word-s2-7" style="height: 182px; width: 122px; white-space: nowrap; word-spacing: 0px; position: absolute; text-transform: none; word-break: keep-all; color: rgb(0,0,0); padding-bottom: 0px; padding-top: 0px; font: 600 169px/182px &#39;Times New Roman Bold&#39;, &#39;6c9687e5f8c75fbfc77db2930030002&#39;, &#39;Times New Roman Bold&#39;; padding-left: 0px; left: 2089px; margin: 0px; widows: 1; z-index: 40; letter-spacing: normal; top: 5095px; padding-right: 0px; background-color: rgb(255,255,255); text-indent: 0px; -webkit-text-stroke-width: 0px; -webkit-font-smoothing: antialiased; text-shadow: rgba(0, 0, 0, 0.00392157) 1px 1px 1px">A</p><p class="reader-word-layer reader-word-s2-2" style="height: 182px; width: 849px; white-space: nowrap; word-spacing: 0px; position: absolute; text-transform: none; word-break: keep-all; color: rgb(0,0,0); padding-bottom: 0px; padding-top: 0px; font: 600 169px/182px 宋体, &#39;6c9687e5f8c75fbfc77db2930020002&#39;, 宋体; padding-left: 0px; left: 2211px; margin: 0px; widows: 1; z-index: 41; letter-spacing: normal; top: 5095px; padding-right: 0px; background-color: rgb(255,255,255); text-indent: 0px; -webkit-text-stroke-width: 0px; -webkit-font-smoothing: antialiased; text-shadow: rgba(0, 0, 0, 0.00392157) 1px 1px 1px">．先序遍历</p><p class="reader-word-layer reader-word-s2-7" style="height: 182px; width: 42px; white-space: nowrap; word-spacing: 0px; position: absolute; text-transform: none; word-break: keep-all; color: rgb(0,0,0); padding-bottom: 0px; padding-top: 0px; font: 600 169px/182px simsun; padding-left: 0px; left: 3061px; margin: 0px; widows: 1; z-index: 42; letter-spacing: normal; top: 5095px; padding-right: 0px; background-color: rgb(255,255,255); text-indent: 0px; -webkit-text-stroke-width: 0px; -webkit-font-smoothing: antialiased; text-shadow: rgba(0, 0, 0, 0.00392157) 1px 1px 1px">&nbsp;</p><p class="reader-word-layer reader-word-s2-7" style="height: 182px; width: 42px; white-space: nowrap; word-spacing: 0px; position: absolute; text-transform: none; word-break: keep-all; color: rgb(0,0,0); padding-bottom: 0px; padding-top: 0px; font: 600 169px/182px simsun; padding-left: 0px; left: 3146px; margin: 0px; widows: 1; z-index: 43; letter-spacing: normal; top: 5095px; padding-right: 0px; background-color: rgb(255,255,255); text-indent: 0px; -webkit-text-stroke-width: 0px; -webkit-font-smoothing: antialiased; text-shadow: rgba(0, 0, 0, 0.00392157) 1px 1px 1px">&nbsp;</p><p class="reader-word-layer reader-word-s2-7" style="height: 182px; width: 42px; white-space: nowrap; word-spacing: 0px; position: absolute; text-transform: none; word-break: keep-all; color: rgb(0,0,0); padding-bottom: 0px; padding-top: 0px; font: 600 169px/182px simsun; padding-left: 0px; left: 3231px; margin: 0px; widows: 1; z-index: 44; letter-spacing: normal; top: 5095px; padding-right: 0px; background-color: rgb(255,255,255); text-indent: 0px; -webkit-text-stroke-width: 0px; -webkit-font-smoothing: antialiased; text-shadow: rgba(0, 0, 0, 0.00392157) 1px 1px 1px">&nbsp;</p><p class="reader-word-layer reader-word-s2-7" style="height: 182px; width: 42px; white-space: nowrap; word-spacing: 0px; position: absolute; text-transform: none; word-break: keep-all; color: rgb(0,0,0); padding-bottom: 0px; padding-top: 0px; font: 600 169px/182px simsun; padding-left: 0px; left: 3316px; margin: 0px; widows: 1; z-index: 45; letter-spacing: normal; top: 5095px; padding-right: 0px; background-color: rgb(255,255,255); text-indent: 0px; -webkit-text-stroke-width: 0px; -webkit-font-smoothing: antialiased; text-shadow: rgba(0, 0, 0, 0.00392157) 1px 1px 1px">&nbsp;</p><p class="reader-word-layer reader-word-s2-7" style="height: 182px; width: 42px; white-space: nowrap; word-spacing: 0px; position: absolute; text-transform: none; word-break: keep-all; color: rgb(0,0,0); padding-bottom: 0px; padding-top: 0px; font: 600 169px/182px simsun; padding-left: 0px; left: 3401px; margin: 0px; widows: 1; z-index: 46; letter-spacing: normal; top: 5095px; padding-right: 0px; background-color: rgb(255,255,255); text-indent: 0px; -webkit-text-stroke-width: 0px; -webkit-font-smoothing: antialiased; text-shadow: rgba(0, 0, 0, 0.00392157) 1px 1px 1px">&nbsp;</p><p class="reader-word-layer reader-word-s2-7" style="height: 182px; width: 42px; white-space: nowrap; word-spacing: 0px; position: absolute; text-transform: none; word-break: keep-all; color: rgb(0,0,0); padding-bottom: 0px; padding-top: 0px; font: 600 169px/182px simsun; padding-left: 0px; left: 3486px; margin: 0px; widows: 1; z-index: 47; letter-spacing: normal; top: 5095px; padding-right: 0px; background-color: rgb(255,255,255); text-indent: 0px; -webkit-text-stroke-width: 0px; -webkit-font-smoothing: antialiased; text-shadow: rgba(0, 0, 0, 0.00392157) 1px 1px 1px">&nbsp;</p><p class="reader-word-layer reader-word-s2-17" style="height: 182px; width: 198px; white-space: nowrap; word-spacing: 0px; position: absolute; text-transform: none; word-break: keep-all; color: rgb(0,0,0); padding-bottom: 0px; padding-top: 0px; font: 600 169px/182px &#39;Times New Roman Bold&#39;, &#39;6c9687e5f8c75fbfc77db2930030002&#39;, &#39;Times New Roman Bold&#39;; padding-left: 0px; left: 3569px; margin: 0px; widows: 1; z-index: 48; letter-spacing: 0px; top: 5095px; padding-right: 0px; background-color: rgb(255,255,255); text-indent: 0px; -webkit-text-stroke-width: 0px; -webkit-font-smoothing: antialiased; text-shadow: rgba(0, 0, 0, 0.00392157) 1px 1px 1px">B.&nbsp;</p><p class="reader-word-layer reader-word-s2-7" style="height: 182px; width: 42px; white-space: nowrap; word-spacing: 0px; position: absolute; text-transform: none; word-break: keep-all; color: rgb(0,0,0); padding-bottom: 0px; padding-top: 0px; font: 600 169px/182px simsun; padding-left: 0px; left: 3810px; margin: 0px; widows: 1; z-index: 49; letter-spacing: normal; top: 5095px; padding-right: 0px; background-color: rgb(255,255,255); text-indent: 0px; -webkit-text-stroke-width: 0px; -webkit-font-smoothing: antialiased; text-shadow: rgba(0, 0, 0, 0.00392157) 1px 1px 1px">&nbsp;</p><p class="reader-word-layer reader-word-s2-2" style="height: 182px; width: 679px; white-space: nowrap; word-spacing: 0px; position: absolute; text-transform: none; word-break: keep-all; color: rgb(0,0,0); padding-bottom: 0px; padding-top: 0px; font: 600 169px/182px 宋体, &#39;6c9687e5f8c75fbfc77db2930020002&#39;, 宋体; padding-left: 0px; left: 3893px; margin: 0px; widows: 1; z-index: 50; letter-spacing: normal; top: 5095px; padding-right: 0px; background-color: rgb(255,255,255); text-indent: 0px; -webkit-text-stroke-width: 0px; -webkit-font-smoothing: antialiased; text-shadow: rgba(0, 0, 0, 0.00392157) 1px 1px 1px">中序遍历</p><p class="reader-word-layer reader-word-s2-7" style="height: 182px; width: 42px; white-space: nowrap; word-spacing: 0px; position: absolute; text-transform: none; word-break: keep-all; color: rgb(0,0,0); padding-bottom: 0px; padding-top: 0px; font: 600 169px/182px simsun; padding-left: 0px; left: 4573px; margin: 0px; widows: 1; z-index: 51; letter-spacing: normal; top: 5095px; padding-right: 0px; background-color: rgb(255,255,255); text-indent: 0px; -webkit-text-stroke-width: 0px; -webkit-font-smoothing: antialiased; text-shadow: rgba(0, 0, 0, 0.00392157) 1px 1px 1px">&nbsp;</p><p class="reader-word-layer reader-word-s2-7" style="height: 182px; width: 42px; white-space: nowrap; word-spacing: 0px; position: absolute; text-transform: none; word-break: keep-all; color: rgb(0,0,0); padding-bottom: 0px; padding-top: 0px; font: 600 169px/182px simsun; padding-left: 0px; left: 4658px; margin: 0px; widows: 1; z-index: 52; letter-spacing: normal; top: 5095px; padding-right: 0px; background-color: rgb(255,255,255); text-indent: 0px; -webkit-text-stroke-width: 0px; -webkit-font-smoothing: antialiased; text-shadow: rgba(0, 0, 0, 0.00392157) 1px 1px 1px">&nbsp;</p><p class="reader-word-layer reader-word-s2-7" style="height: 182px; width: 42px; white-space: nowrap; word-spacing: 0px; position: absolute; text-transform: none; word-break: keep-all; color: rgb(0,0,0); padding-bottom: 0px; padding-top: 0px; font: 600 169px/182px simsun; padding-left: 0px; left: 4743px; margin: 0px; widows: 1; z-index: 53; letter-spacing: normal; top: 5095px; padding-right: 0px; background-color: rgb(255,255,255); text-indent: 0px; -webkit-text-stroke-width: 0px; -webkit-font-smoothing: antialiased; text-shadow: rgba(0, 0, 0, 0.00392157) 1px 1px 1px">&nbsp;</p><p class="reader-word-layer reader-word-s2-7" style="height: 182px; width: 42px; white-space: nowrap; word-spacing: 0px; position: absolute; text-transform: none; word-break: keep-all; color: rgb(0,0,0); padding-bottom: 0px; padding-top: 0px; font: 600 169px/182px simsun; padding-left: 0px; left: 4828px; margin: 0px; widows: 1; z-index: 54; letter-spacing: normal; top: 5095px; padding-right: 0px; background-color: rgb(255,255,255); text-indent: 0px; -webkit-text-stroke-width: 0px; -webkit-font-smoothing: antialiased; text-shadow: rgba(0, 0, 0, 0.00392157) 1px 1px 1px">&nbsp;</p><p class="reader-word-layer reader-word-s2-7" style="height: 182px; width: 42px; white-space: nowrap; word-spacing: 0px; position: absolute; text-transform: none; word-break: keep-all; color: rgb(0,0,0); padding-bottom: 0px; padding-top: 0px; font: 600 169px/182px simsun; padding-left: 0px; left: 4913px; margin: 0px; widows: 1; z-index: 55; letter-spacing: normal; top: 5095px; padding-right: 0px; background-color: rgb(255,255,255); text-indent: 0px; -webkit-text-stroke-width: 0px; -webkit-font-smoothing: antialiased; text-shadow: rgba(0, 0, 0, 0.00392157) 1px 1px 1px">&nbsp;</p><p class="reader-word-layer reader-word-s2-18" style="height: 182px; width: 208px; white-space: nowrap; word-spacing: 0px; position: absolute; text-transform: none; word-break: keep-all; color: rgb(0,0,0); padding-bottom: 0px; padding-top: 0px; font: 600 169px/182px &#39;Times New Roman Bold&#39;, &#39;6c9687e5f8c75fbfc77db2930030002&#39;, &#39;Times New Roman Bold&#39;; padding-left: 0px; left: 4996px; margin: 0px; widows: 1; z-index: 56; letter-spacing: 0px; top: 5095px; padding-right: 0px; background-color: rgb(255,255,255); text-indent: 0px; -webkit-text-stroke-width: 0px; -webkit-font-smoothing: antialiased; text-shadow: rgba(0, 0, 0, 0.00392157) 1px 1px 1px">C.&nbsp;</p><p class="reader-word-layer reader-word-s2-7" style="height: 182px; width: 42px; white-space: nowrap; word-spacing: 0px; position: absolute; text-transform: none; word-break: keep-all; color: rgb(0,0,0); padding-bottom: 0px; padding-top: 0px; font: 600 169px/182px simsun; padding-left: 0px; left: 5247px; margin: 0px; widows: 1; z-index: 57; letter-spacing: normal; top: 5095px; padding-right: 0px; background-color: rgb(255,255,255); text-indent: 0px; -webkit-text-stroke-width: 0px; -webkit-font-smoothing: antialiased; text-shadow: rgba(0, 0, 0, 0.00392157) 1px 1px 1px">&nbsp;</p><p class="reader-word-layer reader-word-s2-2" style="height: 182px; width: 679px; white-space: nowrap; word-spacing: 0px; position: absolute; text-transform: none; word-break: keep-all; color: rgb(0,0,0); padding-bottom: 0px; padding-top: 0px; font: 600 169px/182px 宋体, &#39;6c9687e5f8c75fbfc77db2930020002&#39;, 宋体; padding-left: 0px; left: 5330px; margin: 0px; widows: 1; z-index: 58; letter-spacing: normal; top: 5095px; padding-right: 0px; background-color: rgb(255,255,255); text-indent: 0px; -webkit-text-stroke-width: 0px; -webkit-font-smoothing: antialiased; text-shadow: rgba(0, 0, 0, 0.00392157) 1px 1px 1px">后序遍历</p><p class="reader-word-layer reader-word-s2-7" style="height: 182px; width: 42px; white-space: nowrap; word-spacing: 0px; position: absolute; text-transform: none; word-break: keep-all; color: rgb(0,0,0); padding-bottom: 0px; padding-top: 0px; font: 600 169px/182px simsun; padding-left: 0px; left: 6008px; margin: 0px; widows: 1; z-index: 59; letter-spacing: normal; top: 5095px; padding-right: 0px; background-color: rgb(255,255,255); text-indent: 0px; -webkit-text-stroke-width: 0px; -webkit-font-smoothing: antialiased; text-shadow: rgba(0, 0, 0, 0.00392157) 1px 1px 1px">&nbsp;</p><p class="reader-word-layer reader-word-s2-7" style="height: 182px; width: 42px; white-space: nowrap; word-spacing: 0px; position: absolute; text-transform: none; word-break: keep-all; color: rgb(0,0,0); padding-bottom: 0px; padding-top: 0px; font: 600 169px/182px simsun; padding-left: 0px; left: 6093px; margin: 0px; widows: 1; z-index: 60; letter-spacing: normal; top: 5095px; padding-right: 0px; background-color: rgb(255,255,255); text-indent: 0px; -webkit-text-stroke-width: 0px; -webkit-font-smoothing: antialiased; text-shadow: rgba(0, 0, 0, 0.00392157) 1px 1px 1px">&nbsp;</p><p class="reader-word-layer reader-word-s2-7" style="height: 182px; width: 42px; white-space: nowrap; word-spacing: 0px; position: absolute; text-transform: none; word-break: keep-all; color: rgb(0,0,0); padding-bottom: 0px; padding-top: 0px; font: 600 169px/182px simsun; padding-left: 0px; left: 6178px; margin: 0px; widows: 1; z-index: 61; letter-spacing: normal; top: 5095px; padding-right: 0px; background-color: rgb(255,255,255); text-indent: 0px; -webkit-text-stroke-width: 0px; -webkit-font-smoothing: antialiased; text-shadow: rgba(0, 0, 0, 0.00392157) 1px 1px 1px">&nbsp;</p><p class="reader-word-layer reader-word-s2-7" style="height: 182px; width: 42px; white-space: nowrap; word-spacing: 0px; position: absolute; text-transform: none; word-break: keep-all; color: rgb(0,0,0); padding-bottom: 0px; padding-top: 0px; font: 600 169px/182px simsun; padding-left: 0px; left: 6263px; margin: 0px; widows: 1; z-index: 62; letter-spacing: normal; top: 5095px; padding-right: 0px; background-color: rgb(255,255,255); text-indent: 0px; -webkit-text-stroke-width: 0px; -webkit-font-smoothing: antialiased; text-shadow: rgba(0, 0, 0, 0.00392157) 1px 1px 1px">&nbsp;</p><p class="reader-word-layer reader-word-s2-18" style="height: 182px; width: 208px; white-space: nowrap; word-spacing: 0px; position: absolute; text-transform: none; word-break: keep-all; color: rgb(0,0,0); padding-bottom: 0px; padding-top: 0px; font: 600 169px/182px &#39;Times New Roman Bold&#39;, &#39;6c9687e5f8c75fbfc77db2930030002&#39;, &#39;Times New Roman Bold&#39;; padding-left: 0px; left: 6348px; margin: 0px; widows: 1; z-index: 63; letter-spacing: 0px; top: 5095px; padding-right: 0px; background-color: rgb(255,255,255); text-indent: 0px; -webkit-text-stroke-width: 0px; -webkit-font-smoothing: antialiased; text-shadow: rgba(0, 0, 0, 0.00392157) 1px 1px 1px">D.&nbsp;</p><p class="reader-word-layer reader-word-s2-7" style="height: 182px; width: 42px; white-space: nowrap; word-spacing: 0px; position: absolute; text-transform: none; word-break: keep-all; color: rgb(0,0,0); padding-bottom: 0px; padding-top: 0px; font: 600 169px/182px simsun; padding-left: 0px; left: 6599px; margin: 0px; widows: 1; z-index: 64; letter-spacing: normal; top: 5095px; padding-right: 0px; background-color: rgb(255,255,255); text-indent: 0px; -webkit-text-stroke-width: 0px; -webkit-font-smoothing: antialiased; text-shadow: rgba(0, 0, 0, 0.00392157) 1px 1px 1px">&nbsp;</p><p class="reader-word-layer reader-word-s2-2" style="height: 182px; width: 679px; white-space: nowrap; word-spacing: 0px; position: absolute; text-transform: none; word-break: keep-all; color: rgb(0,0,0); padding-bottom: 0px; padding-top: 0px; font: 600 169px/182px 宋体, &#39;6c9687e5f8c75fbfc77db2930020002&#39;, 宋体; padding-left: 0px; left: 6683px; margin: 0px; widows: 1; z-index: 65; letter-spacing: normal; top: 5095px; padding-right: 0px; background-color: rgb(255,255,255); text-indent: 0px; -webkit-text-stroke-width: 0px; -webkit-font-smoothing: antialiased; text-shadow: rgba(0, 0, 0, 0.00392157) 1px 1px 1px">层次遍历</p><p>A．前序遍历&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; B.&nbsp; 中序遍历&nbsp;&nbsp;&nbsp;&nbsp; C.&nbsp; 后序遍历&nbsp;&nbsp;&nbsp; D.&nbsp; 层次遍历<br class="Apple-interchange-newline"/>&nbsp;</p>
+      	
+                <input type="hidden" name="problemID" value="4826">      	
+                <input type="hidden" name="assignID" value="904">  
+            </form>  
+             
+        </td>
+        
+   </tr>   
+   
+   
+   <tr>
+        <th style="width:4em">6.</th>
+        <td>
+            <span id="saveTip4827" style="z-index: 100;position: absolute;right:0;" class="badge badge-success"></span>
+            <form method="post" name="answerForm4827" action="stuAnswerHandler.jsp" target="frame_problemhandler" autocomplete="off">
+                <p>任何一个无向连通图的最小生成树 <input name="answer1" type="text" maxlength="15" onChange="document.answerForm4827.submit();" value="B" class="optionMulti">。</p>
+<p class="reader-word-layer reader-word-s2-7" style="height: 182px; width: 122px; white-space: nowrap; word-spacing: 0px; position: absolute; text-transform: none; word-break: keep-all; color: rgb(0,0,0); padding-bottom: 0px; padding-top: 0px; font: 600 169px/182px 'Times New Roman Bold', '6c9687e5f8c75fbfc77db2930030002', 'Times New Roman Bold'; padding-left: 0px; left: 2089px; margin: 0px; widows: 1; z-index: 113; letter-spacing: normal; top: 6350px; padding-right: 0px; background-color: rgb(255,255,255); text-indent: 0px; -webkit-text-stroke-width: 0px; -webkit-font-smoothing: antialiased; text-shadow: rgba(0, 0, 0, 0.00392157) 1px 1px 1px">A</p>
+<p class="reader-word-layer reader-word-s2-2" style="height: 182px; width: 849px; white-space: nowrap; word-spacing: 0px; position: absolute; text-transform: none; word-break: keep-all; color: rgb(0,0,0); padding-bottom: 0px; padding-top: 0px; font: 600 169px/182px 宋体, '6c9687e5f8c75fbfc77db2930020002', 宋体; padding-left: 0px; left: 2211px; margin: 0px; widows: 1; z-index: 114; letter-spacing: normal; top: 6350px; padding-right: 0px; background-color: rgb(255,255,255); text-indent: 0px; -webkit-text-stroke-width: 0px; -webkit-font-smoothing: antialiased; text-shadow: rgba(0, 0, 0, 0.00392157) 1px 1px 1px">．只有一棵</p>
+<p class="reader-word-layer reader-word-s2-7" style="height: 182px; width: 42px; white-space: nowrap; word-spacing: 0px; position: absolute; text-transform: none; word-break: keep-all; color: rgb(0,0,0); padding-bottom: 0px; padding-top: 0px; font: 600 169px/182px simsun; padding-left: 0px; left: 3061px; margin: 0px; widows: 1; z-index: 115; letter-spacing: normal; top: 6350px; padding-right: 0px; background-color: rgb(255,255,255); text-indent: 0px; -webkit-text-stroke-width: 0px; -webkit-font-smoothing: antialiased; text-shadow: rgba(0, 0, 0, 0.00392157) 1px 1px 1px">&nbsp;</p>
+<p class="reader-word-layer reader-word-s2-7" style="height: 182px; width: 42px; white-space: nowrap; word-spacing: 0px; position: absolute; text-transform: none; word-break: keep-all; color: rgb(0,0,0); padding-bottom: 0px; padding-top: 0px; font: 600 169px/182px simsun; padding-left: 0px; left: 3146px; margin: 0px; widows: 1; z-index: 116; letter-spacing: normal; top: 6350px; padding-right: 0px; background-color: rgb(255,255,255); text-indent: 0px; -webkit-text-stroke-width: 0px; -webkit-font-smoothing: antialiased; text-shadow: rgba(0, 0, 0, 0.00392157) 1px 1px 1px">&nbsp;</p>
+<p class="reader-word-layer reader-word-s2-7" style="height: 182px; width: 42px; white-space: nowrap; word-spacing: 0px; position: absolute; text-transform: none; word-break: keep-all; color: rgb(0,0,0); padding-bottom: 0px; padding-top: 0px; font: 600 169px/182px simsun; padding-left: 0px; left: 3231px; margin: 0px; widows: 1; z-index: 117; letter-spacing: normal; top: 6350px; padding-right: 0px; background-color: rgb(255,255,255); text-indent: 0px; -webkit-text-stroke-width: 0px; -webkit-font-smoothing: antialiased; text-shadow: rgba(0, 0, 0, 0.00392157) 1px 1px 1px">&nbsp;</p>
+<p class="reader-word-layer reader-word-s2-7" style="height: 182px; width: 42px; white-space: nowrap; word-spacing: 0px; position: absolute; text-transform: none; word-break: keep-all; color: rgb(0,0,0); padding-bottom: 0px; padding-top: 0px; font: 600 169px/182px simsun; padding-left: 0px; left: 3316px; margin: 0px; widows: 1; z-index: 118; letter-spacing: normal; top: 6350px; padding-right: 0px; background-color: rgb(255,255,255); text-indent: 0px; -webkit-text-stroke-width: 0px; -webkit-font-smoothing: antialiased; text-shadow: rgba(0, 0, 0, 0.00392157) 1px 1px 1px">&nbsp;</p>
+<p class="reader-word-layer reader-word-s2-7" style="height: 182px; width: 42px; white-space: nowrap; word-spacing: 0px; position: absolute; text-transform: none; word-break: keep-all; color: rgb(0,0,0); padding-bottom: 0px; padding-top: 0px; font: 600 169px/182px simsun; padding-left: 0px; left: 3401px; margin: 0px; widows: 1; z-index: 119; letter-spacing: normal; top: 6350px; padding-right: 0px; background-color: rgb(255,255,255); text-indent: 0px; -webkit-text-stroke-width: 0px; -webkit-font-smoothing: antialiased; text-shadow: rgba(0, 0, 0, 0.00392157) 1px 1px 1px">&nbsp;</p>
+<p class="reader-word-layer reader-word-s2-17" style="height: 182px; width: 198px; white-space: nowrap; word-spacing: 0px; position: absolute; text-transform: none; word-break: keep-all; color: rgb(0,0,0); padding-bottom: 0px; padding-top: 0px; font: 600 169px/182px 'Times New Roman Bold', '6c9687e5f8c75fbfc77db2930030002', 'Times New Roman Bold'; padding-left: 0px; left: 3484px; margin: 0px; widows: 1; z-index: 120; letter-spacing: 0px; top: 6350px; padding-right: 0px; background-color: rgb(255,255,255); text-indent: 0px; -webkit-text-stroke-width: 0px; -webkit-font-smoothing: antialiased; text-shadow: rgba(0, 0, 0, 0.00392157) 1px 1px 1px">B.&nbsp;</p>
+<p class="reader-word-layer reader-word-s2-7" style="height: 182px; width: 42px; white-space: nowrap; word-spacing: 0px; position: absolute; text-transform: none; word-break: keep-all; color: rgb(0,0,0); padding-bottom: 0px; padding-top: 0px; font: 600 169px/182px simsun; padding-left: 0px; left: 3725px; margin: 0px; widows: 1; z-index: 121; letter-spacing: normal; top: 6350px; padding-right: 0px; background-color: rgb(255,255,255); text-indent: 0px; -webkit-text-stroke-width: 0px; -webkit-font-smoothing: antialiased; text-shadow: rgba(0, 0, 0, 0.00392157) 1px 1px 1px">&nbsp;</p>
+<p class="reader-word-layer reader-word-s2-2" style="height: 182px; width: 849px; white-space: nowrap; word-spacing: 0px; position: absolute; text-transform: none; word-break: keep-all; color: rgb(0,0,0); padding-bottom: 0px; padding-top: 0px; font: 600 169px/182px 宋体, '6c9687e5f8c75fbfc77db2930020002', 宋体; padding-left: 0px; left: 3808px; margin: 0px; widows: 1; z-index: 122; letter-spacing: normal; top: 6350px; padding-right: 0px; background-color: rgb(255,255,255); text-indent: 0px; -webkit-text-stroke-width: 0px; -webkit-font-smoothing: antialiased; text-shadow: rgba(0, 0, 0, 0.00392157) 1px 1px 1px">一棵或多棵</p>
+<p class="reader-word-layer reader-word-s2-7" style="height: 182px; width: 42px; white-space: nowrap; word-spacing: 0px; position: absolute; text-transform: none; word-break: keep-all; color: rgb(0,0,0); padding-bottom: 0px; padding-top: 0px; font: 600 169px/182px simsun; padding-left: 0px; left: 4658px; margin: 0px; widows: 1; z-index: 123; letter-spacing: normal; top: 6350px; padding-right: 0px; background-color: rgb(255,255,255); text-indent: 0px; -webkit-text-stroke-width: 0px; -webkit-font-smoothing: antialiased; text-shadow: rgba(0, 0, 0, 0.00392157) 1px 1px 1px">&nbsp;</p>
+<p class="reader-word-layer reader-word-s2-7" style="height: 182px; width: 42px; white-space: nowrap; word-spacing: 0px; position: absolute; text-transform: none; word-break: keep-all; color: rgb(0,0,0); padding-bottom: 0px; padding-top: 0px; font: 600 169px/182px simsun; padding-left: 0px; left: 4743px; margin: 0px; widows: 1; z-index: 124; letter-spacing: normal; top: 6350px; padding-right: 0px; background-color: rgb(255,255,255); text-indent: 0px; -webkit-text-stroke-width: 0px; -webkit-font-smoothing: antialiased; text-shadow: rgba(0, 0, 0, 0.00392157) 1px 1px 1px">&nbsp;</p>
+<p class="reader-word-layer reader-word-s2-7" style="height: 182px; width: 42px; white-space: nowrap; word-spacing: 0px; position: absolute; text-transform: none; word-break: keep-all; color: rgb(0,0,0); padding-bottom: 0px; padding-top: 0px; font: 600 169px/182px simsun; padding-left: 0px; left: 4828px; margin: 0px; widows: 1; z-index: 125; letter-spacing: normal; top: 6350px; padding-right: 0px; background-color: rgb(255,255,255); text-indent: 0px; -webkit-text-stroke-width: 0px; -webkit-font-smoothing: antialiased; text-shadow: rgba(0, 0, 0, 0.00392157) 1px 1px 1px">&nbsp;</p>
+<p class="reader-word-layer reader-word-s2-7" style="height: 182px; width: 42px; white-space: nowrap; word-spacing: 0px; position: absolute; text-transform: none; word-break: keep-all; color: rgb(0,0,0); padding-bottom: 0px; padding-top: 0px; font: 600 169px/182px simsun; padding-left: 0px; left: 4913px; margin: 0px; widows: 1; z-index: 126; letter-spacing: normal; top: 6350px; padding-right: 0px; background-color: rgb(255,255,255); text-indent: 0px; -webkit-text-stroke-width: 0px; -webkit-font-smoothing: antialiased; text-shadow: rgba(0, 0, 0, 0.00392157) 1px 1px 1px">&nbsp;</p>
+<p class="reader-word-layer reader-word-s2-7" style="height: 182px; width: 42px; white-space: nowrap; word-spacing: 0px; position: absolute; text-transform: none; word-break: keep-all; color: rgb(0,0,0); padding-bottom: 0px; padding-top: 0px; font: 600 169px/182px simsun; padding-left: 0px; left: 4998px; margin: 0px; widows: 1; z-index: 127; letter-spacing: normal; top: 6350px; padding-right: 0px; background-color: rgb(255,255,255); text-indent: 0px; -webkit-text-stroke-width: 0px; -webkit-font-smoothing: antialiased; text-shadow: rgba(0, 0, 0, 0.00392157) 1px 1px 1px">&nbsp;</p>
+<p class="reader-word-layer reader-word-s2-18" style="height: 182px; width: 208px; white-space: nowrap; word-spacing: 0px; position: absolute; text-transform: none; word-break: keep-all; color: rgb(0,0,0); padding-bottom: 0px; padding-top: 0px; font: 600 169px/182px 'Times New Roman Bold', '6c9687e5f8c75fbfc77db2930030002', 'Times New Roman Bold'; padding-left: 0px; left: 5081px; margin: 0px; widows: 1; z-index: 128; letter-spacing: 0px; top: 6350px; padding-right: 0px; background-color: rgb(255,255,255); text-indent: 0px; -webkit-text-stroke-width: 0px; -webkit-font-smoothing: antialiased; text-shadow: rgba(0, 0, 0, 0.00392157) 1px 1px 1px">C.&nbsp;</p>
+<p class="reader-word-layer reader-word-s2-7" style="height: 182px; width: 42px; white-space: nowrap; word-spacing: 0px; position: absolute; text-transform: none; word-break: keep-all; color: rgb(0,0,0); padding-bottom: 0px; padding-top: 0px; font: 600 169px/182px simsun; padding-left: 0px; left: 5332px; margin: 0px; widows: 1; z-index: 129; letter-spacing: normal; top: 6350px; padding-right: 0px; background-color: rgb(255,255,255); text-indent: 0px; -webkit-text-stroke-width: 0px; -webkit-font-smoothing: antialiased; text-shadow: rgba(0, 0, 0, 0.00392157) 1px 1px 1px">&nbsp;</p>
+<p class="reader-word-layer reader-word-s2-2" style="height: 182px; width: 848px; white-space: nowrap; word-spacing: 0px; position: absolute; text-transform: none; word-break: keep-all; color: rgb(0,0,0); padding-bottom: 0px; padding-top: 0px; font: 600 169px/182px 宋体, '6c9687e5f8c75fbfc77db2930020002', 宋体; padding-left: 0px; left: 5415px; margin: 0px; widows: 1; z-index: 130; letter-spacing: 0px; top: 6350px; padding-right: 0px; background-color: rgb(255,255,255); text-indent: 0px; -webkit-text-stroke-width: 0px; -webkit-font-smoothing: antialiased; text-shadow: rgba(0, 0, 0, 0.00392157) 1px 1px 1px">一定有多棵</p>
+<p class="reader-word-layer reader-word-s2-7" style="height: 182px; width: 42px; white-space: nowrap; word-spacing: 0px; position: absolute; text-transform: none; word-break: keep-all; color: rgb(0,0,0); padding-bottom: 0px; padding-top: 0px; font: 600 169px/182px simsun; padding-left: 0px; left: 6265px; margin: 0px; widows: 1; z-index: 131; letter-spacing: normal; top: 6350px; padding-right: 0px; background-color: rgb(255,255,255); text-indent: 0px; -webkit-text-stroke-width: 0px; -webkit-font-smoothing: antialiased; text-shadow: rgba(0, 0, 0, 0.00392157) 1px 1px 1px">&nbsp;</p>
+<p class="reader-word-layer reader-word-s2-7" style="height: 182px; width: 42px; white-space: nowrap; word-spacing: 0px; position: absolute; text-transform: none; word-break: keep-all; color: rgb(0,0,0); padding-bottom: 0px; padding-top: 0px; font: 600 169px/182px simsun; padding-left: 0px; left: 6350px; margin: 0px; widows: 1; z-index: 132; letter-spacing: normal; top: 6350px; padding-right: 0px; background-color: rgb(255,255,255); text-indent: 0px; -webkit-text-stroke-width: 0px; -webkit-font-smoothing: antialiased; text-shadow: rgba(0, 0, 0, 0.00392157) 1px 1px 1px">&nbsp;</p>
+<p class="reader-word-layer reader-word-s2-7" style="height: 182px; width: 42px; white-space: nowrap; word-spacing: 0px; position: absolute; text-transform: none; word-break: keep-all; color: rgb(0,0,0); padding-bottom: 0px; padding-top: 0px; font: 600 169px/182px simsun; padding-left: 0px; left: 6433px; margin: 0px; widows: 1; z-index: 133; letter-spacing: normal; top: 6350px; padding-right: 0px; background-color: rgb(255,255,255); text-indent: 0px; -webkit-text-stroke-width: 0px; -webkit-font-smoothing: antialiased; text-shadow: rgba(0, 0, 0, 0.00392157) 1px 1px 1px">&nbsp;</p>
+<p class="reader-word-layer reader-word-s2-7" style="height: 182px; width: 42px; white-space: nowrap; word-spacing: 0px; position: absolute; text-transform: none; word-break: keep-all; color: rgb(0,0,0); padding-bottom: 0px; padding-top: 0px; font: 600 169px/182px simsun; padding-left: 0px; left: 6518px; margin: 0px; widows: 1; z-index: 134; letter-spacing: normal; top: 6350px; padding-right: 0px; background-color: rgb(255,255,255); text-indent: 0px; -webkit-text-stroke-width: 0px; -webkit-font-smoothing: antialiased; text-shadow: rgba(0, 0, 0, 0.00392157) 1px 1px 1px">&nbsp;</p>
+<p class="reader-word-layer reader-word-s2-21" style="height: 182px; width: 206px; white-space: nowrap; word-spacing: 0px; position: absolute; text-transform: none; word-break: keep-all; color: rgb(0,0,0); padding-bottom: 0px; padding-top: 0px; font: 600 169px/182px 'Times New Roman Bold', '6c9687e5f8c75fbfc77db2930030002', 'Times New Roman Bold'; padding-left: 0px; left: 6603px; margin: 0px; widows: 1; z-index: 135; letter-spacing: 0px; top: 6350px; padding-right: 0px; background-color: rgb(255,255,255); text-indent: 0px; -webkit-text-stroke-width: 0px; -webkit-font-smoothing: antialiased; text-shadow: rgba(0, 0, 0, 0.00392157) 1px 1px 1px">D.&nbsp;</p>
+<p class="reader-word-layer reader-word-s2-7" style="height: 182px; width: 42px; white-space: nowrap; word-spacing: 0px; position: absolute; text-transform: none; word-break: keep-all; color: rgb(0,0,0); padding-bottom: 0px; padding-top: 0px; font: 600 169px/182px simsun; padding-left: 0px; left: 6852px; margin: 0px; widows: 1; z-index: 136; letter-spacing: normal; top: 6350px; padding-right: 0px; background-color: rgb(255,255,255); text-indent: 0px; -webkit-text-stroke-width: 0px; -webkit-font-smoothing: antialiased; text-shadow: rgba(0, 0, 0, 0.00392157) 1px 1px 1px">&nbsp;</p>
+<p class="reader-word-layer reader-word-s2-2" style="height: 182px; width: 849px; white-space: nowrap; word-spacing: 0px; position: absolute; text-transform: none; word-break: keep-all; color: rgb(0,0,0); padding-bottom: 0px; padding-top: 0px; font: 600 169px/182px 宋体, '6c9687e5f8c75fbfc77db2930020002', 宋体; padding-left: 0px; left: 6935px; margin: 0px; widows: 1; z-index: 137; letter-spacing: normal; top: 6350px; padding-right: 0px; background-color: rgb(255,255,255); text-indent: 0px; -webkit-text-stroke-width: 0px; -webkit-font-smoothing: antialiased; text-shadow: rgba(0, 0, 0, 0.00392157) 1px 1px 1px">可能不存在</p>
+<p>A．只有一棵&nbsp;&nbsp;&nbsp;&nbsp; B.&nbsp; 一棵或多棵&nbsp;&nbsp;&nbsp;&nbsp; C.&nbsp; 一定有多棵&nbsp;&nbsp;&nbsp; D.&nbsp; 可能不存在<br class="Apple-interchange-newline" />
+&nbsp;</p>
+      	
+                <input type="hidden" name="problemID" value="4827">      	
+                <input type="hidden" name="assignID" value="904">  
+            </form>  
+             
+        </td>
+        
+   </tr>   
+   
+   
+   <tr>
+        <th style="width:4em">7.</th>
+        <td>
+            <span id="saveTip4825" style="z-index: 100;position: absolute;right:0;" class="badge badge-success"></span>
+            <form method="post" name="answerForm4825" action="stuAnswerHandler.jsp" target="frame_problemhandler" autocomplete="off">
+                <p>用邻接表表示图进行广度优先遍历时，通常是采用<input name="answer1" type="text" maxlength="15" onChange="document.answerForm4825.submit();" value="B" class="optionMulti">来实现算法的。</p>
+<p>A．栈&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;B.&nbsp;队列&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;C.&nbsp;&nbsp;树&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;D.&nbsp;&nbsp;图&nbsp;</p>
+      	
+                <input type="hidden" name="problemID" value="4825">      	
+                <input type="hidden" name="assignID" value="904">  
+            </form>  
+             
+        </td>
+        
+   </tr>   
+   
+   
+   <tr>
+        <th style="width:4em">8.</th>
+        <td>
+            <span id="saveTip4815" style="z-index: 100;position: absolute;right:0;" class="badge badge-success"></span>
+            <form method="post" name="answerForm4815" action="stuAnswerHandler.jsp" target="frame_problemhandler" autocomplete="off">
+                <p>已知AOE网中顶点v<sub>1</sub>~v<sub>7</sub>分别表示7个事件，弧a<sub>1</sub>~a<sub>10</sub> 分别表示10个活动，弧上的数值表示每个活动花费的时间，如下图所示。那么，该网关键路径的长度为<input name="answer1" type="text" maxlength="15" onChange="document.answerForm4815.submit();" value="C" class="optionMulti">，活动a<sub>6</sub> 的松弛时间（活动的最迟开始时间 - 活动的最早开始时间）为<input name="answer2" type="text" maxlength="15" onChange="document.answerForm4815.submit();" value="A" class="optionMulti">。&nbsp;</p>
+<p>(1) A. 7&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; B.9&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; C. 10&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; D.11</p>
+<p>(2) A. 3&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; B.2&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; C.1&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; D.0</p>
+<p style="text-align: center;"><img width="415" height="186" src="/userfiles/image/AOE5925.PNG" alt="" /></p>
+      	
+                <input type="hidden" name="problemID" value="4815">      	
+                <input type="hidden" name="assignID" value="904">  
+            </form>  
+             
+        </td>
+        
+   </tr>   
+   
+   
+   <tr>
+        <th style="width:4em">9.</th>
+        <td>
+            <span id="saveTip4816" style="z-index: 100;position: absolute;right:0;" class="badge badge-success"></span>
+            <form method="post" name="answerForm4816" action="stuAnswerHandler.jsp" target="frame_problemhandler" autocomplete="off">
+                <p>对于含有n个顶点e条边的无向连通图，利用Kruskal算法生成最小生成树，其时间复杂度为  <input name="answer1" type="text" maxlength="15" onChange="document.answerForm4816.submit();" value="A" class="optionMulti">。</p>
+<p>A. O(elog<sub>2</sub>e)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; B. O(e*n)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; C. O(e*e)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; D.O(nlog<sub>2</sub>n)</p>
+      	
+                <input type="hidden" name="problemID" value="4816">      	
+                <input type="hidden" name="assignID" value="904">  
+            </form>  
+             
+        </td>
+        
+   </tr>   
+   
+   
+   <tr>
+        <th style="width:4em">10.</th>
+        <td>
+            <span id="saveTip4819" style="z-index: 100;position: absolute;right:0;" class="badge badge-success"></span>
+            <form method="post" name="answerForm4819" action="stuAnswerHandler.jsp" target="frame_problemhandler" autocomplete="off">
+                <p>下面关于AOE网的叙述中，<strong>不</strong>正确的是 <input name="answer1" type="text" maxlength="15" onChange="document.answerForm4819.submit();" value="D" class="optionMulti"> 。</p>
+<p>A.若所有关键活动都提前完成，则整个工程一定能够提前完成</p>
+<p>B.即使所有非关键活动都未按时完成，整个工程仍有可能按时完成</p>
+<p>C.任何一个关键活动的延期完成，都会导致整个工程的延期完成</p>
+<p>D.任何一个关键活动的提前完成，都会导致整个工程的提前完成</p>
+      	
+                <input type="hidden" name="problemID" value="4819">      	
+                <input type="hidden" name="assignID" value="904">  
+            </form>  
+             
+        </td>
+        
+   </tr>   
+    
+ </tbody>
+</table>
+ 
+
+                    	
+
+                    
+                    
+
+
+
+<a name="An_Program" id="An_Program"></a>
+
+<i class="fas fa-pencil-alt"></i><b> 编程题</b>
+
+<table class="table table-striped">
+    
+    <thead>
+        <tr> 
+            <th style="width:4em">#</th>
+            <th width="38%"> 题目</th>   
+            <th style="width:5em"> 分值</th>  
+            <th> 批阅信息</th>  
+        </tr>
+    </thead>
+   
+    <tbody>
+
+        <tr> 
+            <th>1.</th>
+            <td>
+                
+                            <a href="programList.jsp?proNum=1&courseID=25&assignID=904"> 图遍历（图-基本题）</a>
+                
+                
+            </td>
+            <td>25.00</td>
+            <td>
+                
+                    <a href="/downloadFile?filename=aQnwMO2V54MloHdkDYcwqrpziX0ctfbHqwd51iVv2rBvNPWbEOctORQuQy1yiuqIRuUs1JT-xnDgMDFvng1O3fgTs3aqcTNcQjtK4OOWPrgT4ZbZAvmiMg">下载源文件</a>
+                    <hr>
+                
+                <small><font color="#3366CC">得分25.00&nbsp;&nbsp;&nbsp;最后一次提交时间:2021-05-27 19:10:30</font><br><br>共有测试数据:5<br>平均占用内存:1.226K&nbsp;&nbsp;&nbsp;&nbsp;平均CPU时间:0.00509S&nbsp;&nbsp;&nbsp;&nbsp;平均墙钟时间:0.00508S<br><br><table border="0" cellpadding="0" cellspacing="0" width=400><tr><td><b>测试数据</b></td><td><b>评判结果</b></td></tr><tr><td>测试数据1</td><td>完全正确</td></tr><tr><td>测试数据2</td><td>完全正确</td></tr><tr><td>测试数据3</td><td>完全正确</td></tr><tr><td>测试数据4</td><td>完全正确</td></tr><tr><td>测试数据5</td><td>完全正确</td></tr></table></small>
+                 <div align="right">
+                     
+                     
+                        <a href="judgeDetailsRedirect.jsp?assignID=904&problemID=4811" target="_blank" class="btn btn-light btn-sm" role="button" aria-pressed="true">
+                            详细  <i class="fas fa-chevron-circle-right"></i>
+                        </a>
+                     
+                     
+                 </div>
+            </td>            
+
+        </tr>
+    
+        <tr> 
+            <th>2.</th>
+            <td>
+                
+                            <a href="programList.jsp?proNum=2&courseID=25&assignID=904"> 独立路径数计算</a>
+                
+                
+            </td>
+            <td>25.00</td>
+            <td>
+                
+                    <a href="/downloadFile?filename=aQnwMO2V54MloHdkDYcwqrpziX0ctfbHqwd51iVv2rBvNPWbEOctORQuQy1yiuqIRuUs1JT-xnAxYW-TClQZah8D3E_mnj1F-SxRZBUGFDPKyQAG_Siftw">下载源文件</a>
+                    <hr>
+                
+                <small><font color="#3366CC">得分25.00&nbsp;&nbsp;&nbsp;最后一次提交时间:2021-05-27 21:30:53</font><br><br>共有测试数据:5<br>平均占用内存:1.227K&nbsp;&nbsp;&nbsp;&nbsp;平均CPU时间:0.00637S&nbsp;&nbsp;&nbsp;&nbsp;平均墙钟时间:0.00636S<br><br><table border="0" cellpadding="0" cellspacing="0" width=400><tr><td><b>测试数据</b></td><td><b>评判结果</b></td></tr><tr><td>测试数据1</td><td>完全正确</td></tr><tr><td>测试数据2</td><td>完全正确</td></tr><tr><td>测试数据3</td><td>完全正确</td></tr><tr><td>测试数据4</td><td>完全正确</td></tr><tr><td>测试数据5</td><td>完全正确</td></tr></table></small>
+                 <div align="right">
+                     
+                     
+                        <a href="judgeDetailsRedirect.jsp?assignID=904&problemID=4833" target="_blank" class="btn btn-light btn-sm" role="button" aria-pressed="true">
+                            详细  <i class="fas fa-chevron-circle-right"></i>
+                        </a>
+                     
+                     
+                 </div>
+            </td>            
+
+        </tr>
+    
+        <tr> 
+            <th>3.</th>
+            <td>
+                
+                            <a href="programList.jsp?proNum=3&courseID=25&assignID=904"> 最少布线（图）</a>
+                
+                
+            </td>
+            <td>25.00</td>
+            <td>
+                
+                    <a href="/downloadFile?filename=aQnwMO2V54MloHdkDYcwqrpziX0ctfbHqwd51iVv2rBvNPWbEOctORQuQy1yiuqIRuUs1JT-xnAxYW-TClQZanyxfpkfZqRUzT_FAm5Y4Fi99s3wjZOIXA">下载源文件</a>
+                    <hr>
+                
+                <small><font color="#3366CC">得分25.00&nbsp;&nbsp;&nbsp;最后一次提交时间:2021-05-28 08:11:09</font><br><br>共有测试数据:5<br>平均占用内存:1.225K&nbsp;&nbsp;&nbsp;&nbsp;平均CPU时间:0.00505S&nbsp;&nbsp;&nbsp;&nbsp;平均墙钟时间:0.00503S<br><br><table border="0" cellpadding="0" cellspacing="0" width=400><tr><td><b>测试数据</b></td><td><b>评判结果</b></td></tr><tr><td>测试数据1</td><td>完全正确</td></tr><tr><td>测试数据2</td><td>完全正确</td></tr><tr><td>测试数据3</td><td>完全正确</td></tr><tr><td>测试数据4</td><td>完全正确</td></tr><tr><td>测试数据5</td><td>完全正确</td></tr></table></small>
+                 <div align="right">
+                     
+                     
+                        <a href="judgeDetailsRedirect.jsp?assignID=904&problemID=4832" target="_blank" class="btn btn-light btn-sm" role="button" aria-pressed="true">
+                            详细  <i class="fas fa-chevron-circle-right"></i>
+                        </a>
+                     
+                     
+                 </div>
+            </td>            
+
+        </tr>
+    
+        <tr> 
+            <th>4.</th>
+            <td>
+                
+                            <a href="programList.jsp?proNum=4&courseID=25&assignID=904"> 北京地铁乘坐线路查询</a>
+                
+                
+            </td>
+            <td>25.00</td>
+            <td>
+                
+                    <a href="/downloadFile?filename=aQnwMO2V54MloHdkDYcwqrpziX0ctfbHqwd51iVv2rBvNPWbEOctORQuQy1yiuqIRuUs1JT-xnAxYW-TClQZapCBAXOY3845PAjM7EiZiz4T4ZbZAvmiMg">下载源文件</a>
+                    <hr>
+                
+                <small><font color="#3366CC">得分25.00&nbsp;&nbsp;&nbsp;最后一次提交时间:2021-05-29 15:14:20</font><br>成功编译,但有警告信息.<br>beij_1_.c: In function &apos;dijkstra&apos;:<br>beij_1_.c:206:2: warning: implicit declaration of function &apos;gets&apos; [-Wimplicit-function-declaration]<br>  gets(s1);gets(s2);<br>  ^<br>/tmp/ccXjLJtH.o: In function `dijkstra&apos;:<br>beij_1_.c:(.text+0x7c5): warning: the `gets&apos; function is dangerous and should not be used.<br>共有测试数据:5<br>平均占用内存:1.570K&nbsp;&nbsp;&nbsp;&nbsp;平均CPU时间:0.00608S&nbsp;&nbsp;&nbsp;&nbsp;平均墙钟时间:0.00606S<br><br><table border="0" cellpadding="0" cellspacing="0" width=400><tr><td><b>测试数据</b></td><td><b>评判结果</b></td></tr><tr><td>测试数据1</td><td>完全正确</td></tr><tr><td>测试数据2</td><td>完全正确</td></tr><tr><td>测试数据3</td><td>完全正确</td></tr><tr><td>测试数据4</td><td>完全正确</td></tr><tr><td>测试数据5</td><td>完全正确</td></tr></table></small>
+                 <div align="right">
+                     
+                     
+                        <a href="judgeDetailsRedirect.jsp?assignID=904&problemID=4834" target="_blank" class="btn btn-light btn-sm" role="button" aria-pressed="true">
+                            详细  <i class="fas fa-chevron-circle-right"></i>
+                        </a>
+                     
+                     
+                 </div>
+            </td>            
+
+        </tr>
+    
+ 
+    </tbody>
+</table>
+                     
+
+        		
+
+
+                   
+           
+        </div>
+   
+    </div>
+    
+    
+    
+    
+    
+    
+</div>
+
+<IFRAME name="frame_problemhandler" frameBorder="0" height="0" marginHeight="0" marginWidth="0" width="0"></IFRAME>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+    <IFRAME src="/includes/stayalive.jsp"  frameBorder=0 height=0 marginHeight=0 marginWidth=0 width=0></IFRAME>
+    
+    <footer id="cgfooter" style="min-height: 70px; width: 100%; padding: 15px;position: relative;bottom: 0;" class="bg-light mt-5">
+      <div class="container text-center">
+       
+              <p><span style="color: rgb(102, 102, 153);">北京航空航天大学 计算机学院</span></p><p><span style="color: rgb(102, 102, 153);">若重置密码，请与当前的任课教师联系</span></p>
+      </div>
+    </footer>
+    
+  
+  
+
+
+    
+
+
+
+
+
+
+
+
+
+
+<script src="/indexcs/js/jquery.js"></script>
+<script>
+    function CGcheckOnline() {
+        setTimeout("doOnlineCheck()", 50000);
+    }
+    
+    function doOnlineCheck() {
+        
+        $.ajax({
+            url: "/includes/cgkeepalive.jsp",
+            data:{userid:"21049"},
+            type:"POST",
+            dataType:"text",
+            timeout:20000,
+            success: function(msg) {
+                var retMsg = msg.trim();
+                if(retMsg === "null") {
+                    alert("与服务器的会话超时，请注销重新登录！");
+                } else if(retMsg === "false") {
+                    alert("用户ID发生变化，请检查是否使用其他账号登录本机！");
+                }
+                CGcheckOnline();
+            },
+            error: function(XMLHttpRequest, textStatus, erroThrown) {
+                alert("可能由于网络问题与服务器的连接断开，请尝试注销重新登录！");
+                CGcheckOnline();
+            }
+        });
+    }
+    
+    $(document).ready(function () {
+        //Increment the idle time counter every minute.
+        CGcheckOnline();
+    });
+
+    
+</script>
+    
+        
+
+
+
+
+
+
+
+
+
+
+
+<script>
+    
+    $('body').bind('copy',function(e) {
+        e.preventDefault(); return false;
+    });
+</script> 
+    
+
+
+</body>
+</html>
+
