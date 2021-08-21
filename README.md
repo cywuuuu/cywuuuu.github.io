@@ -1,37 +1,17 @@
-## Welcome to GitHub Pages
+## Welcome to Cyw's stupid study repo
 
-You can use the [editor on GitHub](https://github.com/cywuuuu/cywuuuu.github.io/edit/main/README.md) to maintain and preview the content for your website in Markdown files.
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+### Self-intro
 
-### Markdown
+I am a spicy chicken, i want to learn more !!!
+![img](https://gimg2.baidu.com/image_search/src=http%3A%2F%2Finews.gtimg.com%2Fnewsapp_match%2F0%2F12070489956%2F0.jpg&refer=http%3A%2F%2Finews.gtimg.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1632108596&t=e80e4ac0c8374fc9c0c7698553f22c14)
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
+**嘿嘿**  _你好呀~_ 
 
-```markdown
-Syntax highlighted code block
 
-# Header 1
-## Header 2
-### Header 3
 
-- Bulleted
-- List
+For more details see (https://github.com/cywuuuu/cywuuuu.github.io).
 
-1. Numbered
-2. List
-
-**Bold** and _Italic_ and `Code` text
-
-[Link](url) and ![Image](src)
-```
-
-For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
-
-### Jekyll Themes
-
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/cywuuuu/cywuuuu.github.io/settings/pages). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
 
 ### Support or Contact
-
-Having trouble with Pages? Check out our [documentation](https://docs.github.com/categories/github-pages-basics/) or [contact support](https://support.github.com/contact) and we’ll help you sort it out.
+~~~ fuxuechenyiwen@163.com ~~~
