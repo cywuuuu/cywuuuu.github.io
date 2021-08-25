@@ -1,0 +1,4 @@
+{
+  "main.py::test_model": true,
+  "main.py::test_once": true
+}
