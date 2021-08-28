@@ -89,6 +89,24 @@ For hardware synthesis, there are two types of `always` blocks that are relevant
 
 Clocked always blocks create a blob of combinational logic just like combinational always blocks, but also creates a set of flip-flops (or "registers") at the output of the blob of combinational logic. Instead of the outputs of the blob of logic being visible immediately, the outputs are visible only immediately after the next (posedge clk).
 
+##### always case
+
+```verilog
+always @(*) begin     // This is a combinational circuit
+    case (in)
+        
+      1'b1: begin 
+      	out = 1'b1;// begin-end if >1 statement
+            end
+        
+      1'b0: out = 1'b0;
+        
+      default: out = 1'bx;
+        
+    endcase// 注意！！endcase！！！
+end
+```
+
 ## Q6 Assignments
 
 #### Blocking vs. Non-Blocking Assignment
@@ -108,3 +126,45 @@ There are three types of assignments in Verilog:
 ![1630117892881](C:\Users\cyw\AppData\Roaming\Typora\typora-user-images\1630117892881.png)
 
 ![1630118541362](C:\Users\cyw\AppData\Roaming\Typora\typora-user-images\1630118541362.png)
+
+## Q7 about latches
+
+> 在很多地方都能看到，verilog中if与case语句必须完整，即if要加上else,case后要加上default语句，以防止latches的发生
+
+2.2 If statement latches
+设计电路时，必须首先考虑电路:
+
+我想要这个逻辑门
+我想要一个具有这些输入并产生这些输出的组合逻辑块
+我想要一组组合的逻辑后跟一组触发器(flip-flops)
+一定不要做的是先编写代码，然后希望它生成正确的电路。
+
+If (cpu_overheated) then shut_off_computer = 1;
+If (~arrived) then keep_driving = ~gas_tank_empty;
+语法正确的代码不一定会导致电路合理（组合逻辑+触发器）。通常的原因是：“在您指定的情况以外的情况下会发生什么？”。 Verilog的答案是：保持输出不变。
+
+这种“保持输出不变”的行为意味着需要记住当前状态，从而产生一个锁存器。组合逻辑（例如逻辑门）无法记住任何状态。
+
+注意警告：Warning (10240): ... inferring latch(es)" messages.
+除非有意使用闩锁，否则它几乎总是表示错误。在所有条件下，组合回路必须为所有输出分配一个值。这通常意味着您总是需要else子句或分配给输出的默认值。
+
+**question:**
+以下代码包含创建闩锁latch的不正确行为。试修复错误，以便仅在计算机确实过热时才关闭计算机，并在到达目的地或需要加油时停止驾驶。
+
+```verilog
+always @(*) begin
+    if (cpu_overheated)
+       shut_off_computer = 1;
+end
+
+always @(*) begin
+    if (~arrived)
+       keep_driving = ~gas_tank_empty;
+end
+```
+
+比如 当第一次cpu_overheat = 1 时 shut off 
+
+但当 cpu_overheat ⬇ 下降时， shut off 仍然 = 1
+
+## Q
