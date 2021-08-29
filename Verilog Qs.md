@@ -35,6 +35,22 @@ module add1 ( input a, input b, input cin,   output sum, output cout );
 assign sum = a\^b\^cin;
 assign cout = (a & b) || (a & cin) || (b & cin);
 
+##### 错位赋值小技巧
+
+```verilog
+module top_module( 
+    input [99:0] in,
+    output [98:0] out_both,
+    output [99:1] out_any,
+    output [99:0] out_different );
+    assign out_both[98:0] = in[99:1] & in[98:0];
+    assign out_any[99:1] = in[99:1] | in[98:0];
+    assign out_different[99:0] = {in[0], in[99:1]} ^ in[99:0];
+endmodule
+```
+
+
+
 
 endmodule
 ------------------------------------------------
@@ -167,4 +183,162 @@ end
 
 但当 cpu_overheat ⬇ 下降时， shut off 仍然 = 1
 
-## Q
+#### avoid latches && less typing => defualt value
+
+To avoid creating latches, all outputs must be assigned a value in all possible conditions (See also [always_if2](https://hdlbits.01xz.net/wiki/always_if2)). Simply having a `default` case is not enough. You must assign a value to all four outputs in all four cases and the default case. This can involve a lot of unnecessary typing. **One easy way around this is to assign a "default value" to the outputs *before* the case statement:**
+
+```verilog
+always @(*) begin
+    up = 1'b0; down = 1'b0; left = 1'b0; right = 1'b0;// *** 不能连等！！！ ***
+    case (scancode)
+        ... // Set to 1 as necessary.
+    endcase //default的内容没有时 就不要写！！ default：空 是不允许的哦
+end
+```
+
+This style of code ***ensures the outputs are assigned a value (of 0) in all possible cases unless the case statement overrides the assignment.*** This also means that a `default:` case item becomes unnecessary.
+
+## Q8 二进制 与多进制表示法
+
+![1630142863334](C:\Users\cyw\AppData\Roaming\Typora\typora-user-images\1630142863334.png)
+
+> ```verilog
+> // synthesis verilog_input_version verilog_2001
+> module top_module (
+>     input [7:0] in,
+>     output reg [2:0] pos  );
+>     always @(*) begin
+>         casez(in) //********caseZZZZZZ!!!!!!!
+>             8'bzzzzzzz1: pos = 0;
+>             8'bzzzzzz10: pos = 1;
+>             8'bzzzzz100: pos = 2;
+>             8'bzzzz1000: pos = 3;
+>             8'bzzz10000: pos = 4;
+>             8'bzz100000: pos = 5;
+>             8'bz1000000: pos = 6;
+>             8'b10000000: pos = 7;
+>             default: pos = 0;
+>         endcase
+>     end
+>         
+> endmodule
+> ```
+
+##### 关于wire 中数据unsigned 比大小 可以直接 > <
+
+e.g.
+
+```verilog
+module top_module (
+    input [7:0] a, b, c, d,
+    output [7:0] min);//
+	
+    assign min = ((a < b ? a : b) < (c < d ? c : d)) ? (a < b ? a : b) : (c < d ? c : d);
+    // assign intermediate_result1 = compare? true: false;
+	//观察小于号 作用 于wire上
+endmodule
+```
+
+## Q9 运算符 与 for语句
+
+### 一元  多位自我 运算符
+
+The *reduction* operators can do AND, OR, and XOR of the bits of a vector, producing one bit of output:
+
+```
+& a[3:0]     // AND: a[3]&a[2]&a[1]&a[0]. Equivalent to (a[3:0] == 4'hf)
+| b[3:0]     // OR:  b[3]|b[2]|b[1]|b[0]. Equivalent to (b[3:0] != 4'h0)
+^ c[2:0]     // XOR: c[2]^c[1]^c[0]
+```
+
+***These are unary operators that have only one operand (similar to the NOT operators ! and ~).*** You can also invert the outputs of these to create NAND, NOR, and XNOR gates, e.g., `(~& d[7:0])`.
+
+![1630163511729](C:\Users\cyw\AppData\Roaming\Typora\typora-user-images\1630163511729.png)
+
+#### 认清异或门
+
+### 两种for循环的写法
+
+> ###     **A for loop (in a combinational always block or generate block) would be useful here. I would prefer a combinational always block in this case because module instantiations (which require generate blocks) aren't needed.**
+
+```verilog
+module top_module( 
+    input [99:0] in,
+    output [99:0] out
+);
+always@(*)begin
+    for(int i = 0; i <= 99; i++)begin// i++也可以哦
+        out[i] = in[99 - i];// 没有{}只有begin end
+    end
+end
+
+/* 
+//the second way
+generate
+    genvar i;
+    for(i = 0; i <= 99; i = i + 1)begin:reverse
+        assign out[i] = in[99 - i];//!!! need assign
+    end
+endgenerate
+*/
+endmodule
+//这里大家注意，第二种方法在generate中使用for循环的时候，一定要在begin后面起一个名字，如本模块中的reverse。
+```
+
+generate-for只针对于module、reg、net、assign、always、parameter、function、initial、task等语句或者模块，而for只针对于非例化的循环。
+
+generate-for语句：
+**1、generate-for语句必须用genvar关键字定义for的索引变量；**
+**2、for的内容必须用begin end块包起来，哪怕只有一句；**
+**3、begin end块必须起个名字**
+
+在开始仿真前，仿真器会对生成块中代码进行确立展开，展开后的仿真代码中生成变量genvar不复存在。
+
+------------------------------------------------
+
+## Q10 MULTIPLEXER 的 多种写法
+
+#### 2 way
+
+![1630222449731](C:\Users\cyw\AppData\Roaming\Typora\typora-user-images\1630222449731.png)
+
+#### 256 way（邪道表示法，vector 下标为变量的选择器）
+
+- > **Vector indices can be variable**, as long as the synthesizer can figure out that the width of the bits being selected is constant. In particular, selecting one bit out of a vector using a variable index will work.
+
+```verilog
+module top_module( 
+    input [255:0] in,
+    input [7:0] sel,
+    output out );
+    assign out = in[sel];
+endmodule
+```
+
+
+
+## Q10.5 关于数值表示的一点想法
+
+```verilog
+module top_module( 
+    input [15:0] a, b, c, d, e, f, g, h, i,
+    input [3:0] sel,
+    output [15:0] out );
+    always @(*) begin
+        case(sel)
+            0: out = a;// can it be translated? 
+            1: out = b;
+            2: out = c;
+            3: out = d;
+            4: out = e;
+            5'd5: out = f;//这里的位数永远指的二进制的位数
+            5'd6: out = g;
+            5'd7: out = h;
+            5'd8: out = i;
+            default: out = {16{1'b1}};
+        endcase
+    end
+
+endmodule
+```
+
