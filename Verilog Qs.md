@@ -6,13 +6,25 @@
 
 dff仅在上升沿读入数据并在短时间内 令 q = d（q改变）, 但第二个dff在同一上升沿时，仅能将最初未改变的q读取并在同一段时间 同步到q， 这就导致了类似与流水线一节一节的延时性， eg， 第一个dff保留着最新的数据， 第二个dff保留上一次的数据。。。依次类推
 
+
+
 ### Q2 关于always等语法
 
 ```
 1.always@后面内容是敏感变量，always@(*)里面的敏感变量为*，意思是说敏感变量由综合器根据always里面的输入变量自动添加，不用自己考虑。 2.如果没有@，那就是不会满足特定条件才执行，而是执行完一次后立马执行下一次，一直重复执行，比如testbench里面产生50Mhz的时钟就(假设时间尺度是1ns）可以写成 always #20 CLK_50Mhz = ～CLK_50Mhz
 ```
 
+#### and wall 在 clk == 0 时 隔离了上方输出与下方输入（下方输入全部无效）
 
+![1630408545389](C:\Users\cyw\AppData\Roaming\Typora\typora-user-images\1630408545389.png)
+
+![1630408629831](C:\Users\cyw\AppData\Roaming\Typora\typora-user-images\1630408629831.png)
+
+#### clk为正时，下方输入有效
+
+![1630408874115](C:\Users\cyw\AppData\Roaming\Typora\typora-user-images\1630408874115.png)
+
+![1630408893773](C:\Users\cyw\AppData\Roaming\Typora\typora-user-images\1630408893773.png)
 
 一般always@(*)是指里面的语句是组合逻辑的。*代替了敏感变量。
 而一般时序逻辑要写成always@(posedge clk or negedge rst)//[时钟信号](https://www.baidu.com/s?wd=时钟信号&tn=SE_PcZhidaonwhc_ngpagmjz&rsv_dl=gh_pc_zhidao)clk上升沿或者[复位信号](https://www.baidu.com/s?wd=复位信号&tn=SE_PcZhidaonwhc_ngpagmjz&rsv_dl=gh_pc_zhidao)rst下降沿的时候执行always块内的代码。
@@ -366,5 +378,231 @@ module top_module(
     end
 
 endmodule
+```
+
+# BASIC module
+
+### full_adder 
+
+```verilog
+module add1 ( input a, input b, input cin,   output sum, output cout );
+
+assign sum = a^b^cin;// 模拟个位数一个一个1-》0-》1向上涨
+assign cout = (a & b) || (a & cin) || (b & cin);
+// Full adder module here
+// 任意两个 为 1 则cout 为1
+endmodule
+//------------------******-----------------------
+
+module top_module( 
+    input [2:0] a, b,
+    input cin,
+    output [2:0] cout,
+    output [2:0] sum );
+    add1 zero (.a(a[0]), .b(b[0]), .cin(cin), .sum(sum[0]), .cout(cout[0]));
+    add1 one (.a(a[1]), .b(b[1]), .cin(cout[0]), .sum(sum[1]), .cout(cout[1]));
+    add1 two (.a(a[2]), .b(b[2]), .cin(cout[1]), .sum(sum[2]), .cout(cout[2]));
+endmodule
+module add1 ( input a, input b, input cin,   output sum, output cout );
+    assign sum = a^b^cin;// 模拟个位数一个一个1-》0-》1向上涨
+    assign cout = (a & b) || (a & cin) || (b & cin);
+    // Full adder module here
+    // 任意两个 为 1 则cout 为1
+endmodule
+```
+
+### 可以直接对vector使用 a+b
+
+```
+module top_module( 
+    input [99:0] a, b,
+    input cin,
+    output cout,
+    output [99:0] sum );
+    assign {cout, sum[99:0]} = a + b + cin;
+endmodule 
+```
+
+### 关于同步复位和异步复位
+
+一、特点：
+   同步复位：顾名思义，同步复位就是指复位信号只有在时钟上升沿到来时，才能有效。否则，无法完成对系统的复位工作。用Verilog描述如下：
+
+```
+            always @ (posedge clk) begin
+                  if (!Rst_n)
+                    ...
+            end
+```
+
+   异步复位：它是指无论时钟沿是否到来，只要复位信号有效，就对系统进行复位。用Verilog描述如下：
+
+```
+            always @ (posedge clk,negedge Rst_n) begin
+                   if (!Rst_n)
+                      ...
+            end
+```
+
+二、各自的优缺点：
+    1、总的来说，同步复位的优点大概有3条：
+       a、有利于仿真器的仿真。
+       b、可以使所设计的系统成为100%的同步时序电路，这便大大有利于时序分析，而且综合出来的fmax一般较高。
+       c、因为他只有在时钟有效电平到来时才有效，所以可以滤除高于时钟频率的毛刺。
+       他的缺点也有不少，主要有以下几条：
+       a、复位信号的有效时长必须大于时钟周期，才能真正被系统识别并完成复位任务。同时还要考虑，诸如：clk skew,组合逻辑路径延时,复位延时等因素。
+       b、由于大多数的逻辑器件的目标库内的DFF都只有异步复位端口，所以，倘若采用同步复位的话，综合器就会在寄存器的数据输入端口插入组合逻辑，这样就会耗费较多的逻辑资源。
+    2、对于异步复位来说，他的优点也有三条，都是相对应的：
+       a、大多数目标器件库的dff都有异步复位端口，因此采用异步复位可以节省资源。
+       b、设计相对简单。
+       c、异步复位信号识别方便，而且可以很方便的使用FPGA的全局复位端口GSR。
+       缺点：
+       a、在复位信号释放(release)的时候容易出现问题。具体就是说：倘若复位释放时恰恰在时钟有效沿附近，就很容易使寄存器输出出现亚稳态，从而导致亚稳态。
+       b、复位信号容易受到毛刺的影响。
+三、总结：
+    所以说，一般都推荐使用异步复位，同步释放的方式，而且复位信号低电平有效。这样就可以两全其美了。
+
+```
+always @(posedge clk or negedge rst_n)
+
+​         if(!rst_n) b <= 1'b0;
+
+​         else b <= a;
+```
+
+### Dual-edge triggered flip-flop（Dualedge）    
+
+```verilog
+module top_module (
+    input clk,
+    input d,
+    output q
+);
+    reg q_d1;
+    reg q_d2;
+always@(posedge clk)begin
+    q_d1 <= d ^ q_d2;
+end
+always@(negedge clk)begin
+    q_d2 <= d ^ q_d1;
+end
+
+assign q = q_d1 ^ q_d2;
+    endmodule
+```
+
+```verilog
+//second way
+module top_module (
+    input clk,
+    input d,
+    output q
+);
+    reg q_d1;
+    reg q_d2;
+always@(posedge clk)begin
+    q_d1 <= d;
+end
+
+always@(negedge clk)begin
+    q_d2 <= d;
+end
+
+assign q = clk ? q_d1 : q_d2;
+endmodule
+```
+
+
+这道题是重点，大家注意，对于双沿检测，一定不能使用always@(posedge clk or negedge clk)begin这种方式，这种方式是不可综合的，应该用图中的方法一。但是对于第二种方法，虽然这道题是正确的，但是博主亲测在modelsim和vivado中仿真会产生毛刺，不建议大家用，对于这部分逻辑大家应该清楚。
+
+![1630293326985](C:\Users\cyw\AppData\Roaming\Typora\typora-user-images\1630293326985.png)
+
+
+
+
+
+### 计数器
+
+做一个1000clk的计时器
+
+```verilog
+module top_module (
+    input clk,
+    input reset,
+    output OneHertz,
+    output [2:0] c_enable
+); //
+wire[3:0]	one, ten, hundred;
+
+    assign c_enable = {one == 4'd9 && ten == 4'd9, one == 4'd9, 1'b1};//
+assign OneHertz = (one == 4'd9 && ten == 4'd9 && hundred == 4'd9);
+ // enable == 1 时 counter 动一下
+bcdcount counter0 (clk, reset, c_enable[0], one);
+bcdcount counter1 (clk, reset, c_enable[1], ten);
+bcdcount counter2 (clk, reset, c_enable[2], hundred);
+endmodule
+```
+
+##### 12h clock
+
+```verilog
+module top_module(
+    input clk,
+    input reset,
+    input ena,
+    output pm,
+    output [7:0] hh,
+    output [7:0] mm,
+    output [7:0] ss); 
+    wire mcin,hcin,pmt;
+	counter60 seconds(clk, reset, ena, ss, mcin);
+	counter60 minutes(clk, reset, mcin, mm, hcin);
+	counter12 hours(clk, reset, hcin&mcin, hh, pmt);
+    always@(posedge clk)begin
+    if(reset)pm <= 1'b0;
+    else if(pmt)pm <= ~pm;
+    else pm <= pm;
+    end
+
+endmodule
+
+module counter12 (input clk, input reset, input ena, output [7:0] tim, output cout );
+    always @(posedge clk)begin
+        if(reset)	tim <= 8'b0001_0010;
+    	else if(ena)begin
+            if(tim == 8'b0001_0010)		tim <= 8'b0000_0001;
+    		else if(tim[3:0] == 4'd9)begin
+    			tim[7:4] <= tim[7:4] +1'b1;
+    			tim[3:0] <= 4'b0;
+    			end
+    		else
+    			tim[3:0] <= tim[3:0] +1'b1;
+    	end
+        
+    end
+    assign cout = (tim ==8'b0001_0001)&&(ena);
+endmodule
+
+module counter60 (input clk, input reset, input ena, output [7:0] tim, output cout );
+always @(posedge clk)begin
+	if(reset)
+		tim <= 8'd0;
+	else if(ena)begin
+//if(bcd < 8'd59)
+// bcd <= bcd + 1'b1;
+		if(tim == 8'b0101_1001)
+			tim <= 8'd0;
+		else if(tim[3:0] == 4'd9)begin
+			tim[7:4] <= tim[7:4] +1'b1;
+			tim[3:0] <= 4'b0;
+		end
+		else
+			tim[3:0] <= tim[3:0] +1'b1;
+	end
+end
+assign cout = tim ==8'b0101_1001;
+endmodule
+
+
 ```
 
