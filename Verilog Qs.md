@@ -382,7 +382,7 @@ endmodule
 
 # BASIC module
 
-### full_adder 
+### 1.full_adder 
 
 ```verilog
 module add1 ( input a, input b, input cin,   output sum, output cout );
@@ -411,7 +411,7 @@ module add1 ( input a, input b, input cin,   output sum, output cout );
 endmodule
 ```
 
-### 可以直接对vector使用 a+b
+### 2.可以直接对vector使用 a+b
 
 ```
 module top_module( 
@@ -423,7 +423,7 @@ module top_module(
 endmodule 
 ```
 
-### 关于同步复位和异步复位
+### 3.关于同步复位和异步复位
 
 一、特点：
    同步复位：顾名思义，同步复位就是指复位信号只有在时钟上升沿到来时，才能有效。否则，无法完成对系统的复位工作。用Verilog描述如下：
@@ -470,7 +470,7 @@ always @(posedge clk or negedge rst_n)
 ​         else b <= a;
 ```
 
-### Dual-edge triggered flip-flop（Dualedge）    
+### 4. Dual-edge triggered flip-flop（双沿检测）    
 
 ```verilog
 module top_module (
@@ -521,7 +521,7 @@ endmodule
 
 
 
-### 计数器
+### 5.计数器
 
 做一个1000clk的计时器
 
@@ -604,5 +604,102 @@ assign cout = tim ==8'b0101_1001;
 endmodule
 
 
+```
+
+### 6.位移寄存器
+
+#### LFSR
+
+[LFSR：线性反馈移位寄存器及其应用_庸手著文章-CSDN博客](https://blog.csdn.net/little_cats/article/details/104488780)
+
+[线性反馈移位寄存器（LFSR）-非线性反馈移位寄存器的verilog实现（产生伪随机数）..._weixin_30449453的博客-CSDN博客](https://blog.csdn.net/weixin_30449453/article/details/96560705?utm_medium=distribute.pc_relevant.none-task-blog-2~default~baidujs_title~default-0.essearch_pc_relevant&spm=1001.2101.3001.4242)
+
+```
+void lfsr3()
+{
+	unsigned int temp0, temp1, temp2;
+	temp0 = ff0; //拷贝ff0
+	temp1 = ff1; //拷贝ff1
+	temp2 = ff2; //拷贝ff2
+	ff0 = temp2;
+	ff1 = temp0 ^ (0 * temp2);
+	ff2 = temp1 ^ (1 * temp2);
+}
+```
+
+![1630585690095](C:\Users\cyw\AppData\Roaming\Typora\typora-user-images\1630585690095.png)
+
+#### 新的编程模式 ， 组合逻辑 与 时序分块 组合
+
+```verilog
+//新的编程模式 ， 组合逻辑 与 时序
+module top_module(
+    input clk,
+    input reset,    // Active-high synchronous reset to 32'h1
+    output [31:0] q
+); 
+    reg [31:0] q_next;
+    always @ (*) begin 
+        q_next = {q[0], q[31:1]};
+        q_next[21] = q[0] ^ q[22];
+        q_next[1] = q[0] ^ q[2];
+        q_next[0] = q[0] ^ q[1];
+    end 
+    always @ (posedge clk) begin
+        if(reset) q <= 32'h1;
+        else q <= q_next;
+    end
+endmodule
+
+
+```
+
+### 7.interesting parts
+
+#### CONWEY AUTOMATION SIMU
+
+![1630654850696](C:\Users\cyw\AppData\Roaming\Typora\typora-user-images\1630654850696.png)
+
+### 8.Simple FSM 1（asynchronous reset）
+
+![Fsm1.png](https://hdlbits.01xz.net/mw/images/7/70/Fsm1.png)
+
+```verilog
+module top_module(
+    input clk,
+    input areset,    // Asynchronous reset to state B
+    input in,
+    output out);//  
+
+    parameter A=0, B=1; // A, B 表示在哪个圈圈，parameter用数字区分名字 
+    reg state, next_state;//state 当前状态 存储这 A 或B（0或1）
+
+    always @(*) begin    // This is a combinational always block
+        case (state) 
+            A: begin
+                if(in == 1'b1)next_state = A;
+                else next_state = B;
+            end
+            B: begin
+                if(in == 1'b1)next_state = B;
+                else next_state = A;
+            end
+        endcase
+        // State transition logic
+    end
+
+    always @(posedge clk, posedge areset) begin    // This is a sequential always block
+        if(areset == 1) state <= B;
+        else begin
+            state <= next_state;
+        end
+        // State flip-flops with asynchronous reset
+    end
+	
+    assign out = (state == A) ? 0 : 1;
+    // Output logic
+    // assign out = (state == ...);
+
+endmodule
 ```
 
