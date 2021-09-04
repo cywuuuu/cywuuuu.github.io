@@ -703,3 +703,36 @@ module top_module(
 endmodule
 ```
 
+### 9. one-hot 编码 与  自动机
+
+![1630673433760](C:\Users\cyw\AppData\Roaming\Typora\typora-user-images\1630673433760.png)
+
+```verilog
+module top_module(
+    input in,
+    input [3:0] state,
+    output [3:0] next_state,
+    output out); //
+parameter A=0, B=1, C=2, D=3;
+ // 把自动机的每一位看作单独的真值表
+// State transition logic: Derive an equation for each state flip-flop.
+    assign next_state[A] = state[A] & ~in | state[C] & ~in;// next_state[A] 就是 指 xxxx的第0位， 其取值（0或1）反映了next——state是A or 还是B还是CD等 
+    // next_state[A] 为 1 当且仅当 
+assign next_state[B] = state[A] & in | state[B] & in | state[D] & in;
+assign next_state[C] = state[B] & ~in | state[D] & ~in;
+assign next_state[D] = state[C] & in;
+ 
+// Output logic: 
+assign out = state[D];
+endmodule;
+```
+
+### 10.设计自动机
+
+![1630735685928](C:\Users\cyw\AppData\Roaming\Typora\typora-user-images\1630735685928.png)
+
+1.按照输出的n个不同可能， 枚举n个状态
+
+![1630756482667](C:\Users\cyw\AppData\Roaming\Typora\typora-user-images\1630756482667.png)
+
+2.写出状态转移关系
