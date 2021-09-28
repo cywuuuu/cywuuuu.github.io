@@ -6,8 +6,29 @@
 
 dff仅在上升沿读入数据并在短时间内 令 q = d（q改变）, 但第二个dff在同一上升沿时，仅能将最初未改变的q读取并在同一段时间 同步到q， 这就导致了类似与流水线一节一节的延时性， eg， 第一个dff保留着最新的数据， 第二个dff保留上一次的数据。。。依次类推
 
+![1631102186082](C:\Users\cyw\AppData\Roaming\Typora\typora-user-images\1631102186082.png)
 
+mux是多到一，选一路
 
+dmx是一到多中的一， 把1的数据放在其中一个对应输出中
+
+decd是一到多，亮起二进制对应的灯但是传不了数据，而且没有数据输入端口
+
+### Q 1.5 RSlatch
+
+![1631096330036](C:\Users\cyw\AppData\Roaming\Typora\typora-user-images\1631096330036.png)
+
+点亮下方1   可以使对角线点亮，同端熄灭，
+
+然而关闭下方   却没有任何作用，
+
+同理对于上面
+
+#### Q1.7 logisim RAM ROM的数据导入一行一个
+
+![1631144608212](C:\Users\cyw\AppData\Roaming\Typora\typora-user-images\1631144608212.png)
+
+第一种情况对应的结果如上图，Logisim的文件输入是一行一个十六进制数输入进去，当输入进去的数据超过两位十六进制的表示范围时，Logisim会对其进行截断处理。上图中文件里第1、2、4、5行分别是0x01、0x10、0x10、0x01，对应存储器中的位置都是正确的，但第3行内容是0x100，超过了表示范围，截断后是0x00
 ### Q2 关于always等语法
 
 ```
@@ -135,21 +156,89 @@ always @(*) begin     // This is a combinational circuit
 end
 ```
 
+#### always块既可以是边沿敏感的，也可以是电平敏感的，
+
+A正确。上面的讲解提到已经提到了always块建模时序逻辑和组合逻辑的两种常用方法，B正确。在多个always块中对同一个变量进行赋值的代码是不可综合的，C错误。
+
+## initial 块
+
+`initial` 块后面紧跟的语句或顺序语句块在硬件仿真开始时就会运行，且仅会运行一次，一般用于对 `reg` 型变量的取值进行初始化。`initial` 块通常仅用于仿真，是**不可综合的**。下面的代码用于给寄存器 `a` 赋初始值 `0`：
+
+```verilog
+reg a;
+
+initial begin
+    a = 0;
+end
+```
+
+#### always与initial进阶练习（不会开始的always @(*)）
+
+“秋冬之交在即，此乃祭祖之期。”小孔同学刚结束快乐的暑假，开始紧张刺激的计组学习了。可是现在有一个选择摆在他的面前，大家可以告诉他应该怎么选择吗？
+
+仔细阅读下列代码：
+
+![4.3.5.3.png](http://10.212.27.185:9199/cscore-image/zhongshuzhang/be3a5858-77b9-4bf8-8e80-fbc0d2a4b4b6/4.3.5.3.png)
+
+判断：当clk和reset信号都处于下降沿时，mem会被清零。
+
+答案：错误
+
+**注意，always @(*) 表示的是触发条件是always引导的顺序块中所有驱动信号的变化，而不是本模块所有信号的变化。该always块中向mem赋值的是0，是常量，因此这一always块始终不会被触发**
+
 ## Q6 Assignments
+
+#### 未驱动的不能拿来连线assign
+
+未被驱动的wire型变量可以理解为一段没有连接任何信号的导线，它和其他导线相连是没有意义的
 
 #### Blocking vs. Non-Blocking Assignment
 
 There are three types of assignments in Verilog:
 
 - **Continuous** assignments (`assign x = y;`). Can only be used when **not** inside a procedure ("always block").
+
 - Procedural **blocking** assignment: (`x = y;`). Can only be used inside a procedure.
+
 - Procedural **non-blocking** assignment: (`x <= y;`). Can only be used inside a procedure.
 
+  ### 
+
+> 
+>
 > *In a **combinational** always block, use **blocking** assignments.*
 >
 > *In a **clocked** always block, use **non-blocking** assignments. *
 
-*A full understanding of why is not particularly useful for hardware design and requires a good understanding of how Verilog simulators keep track of events. Not following this rule results in extremely hard to find errors that are both non-deterministic and differ between simulation and synthesized hardware.*
+### 分析always @ (posedge clk)中的阻塞与非阻塞语句
+
+- ==**(非阻塞的会 并行赋值，并且时间层次分明 )**==
+
+- 阻塞的会 执行完一个赋值， 然后执行下一个赋值，但这都是一瞬间的事， 赋值在一瞬间是顺着下来赋值的，缺少了时序的隔断
+
+  ![1631516551851](C:\Users\cyw\AppData\Roaming\Typora\typora-user-images\1631516551851.png)
+
+  
+  
+  
+
+#### =会在always块之前运行, <=可以视为和always块并行运行，且本次不对always块中的<=的所有右值产生影响
+
+**如果你在ISim中进行试验就会发现，testbench中=和<=在时钟上升沿的临界状态下，行为是不同的。假如赋值和always块在同一个时钟上升沿发生，=会在always块之前运行，从而影响alway块的赋值；<=可以视为和always块并行运行，且本次不对always块中的<=的所有右值产生影响。**
+
+> 改为 <= 后， in的值会在调用的uut上升沿来临时（后）赋值， 自然会无法影响本上升沿的情况，相比于=在上升沿来前一丢丢赋值，当个上升沿就起到作用；<=会比 = 慢上一拍
+>
+> ![1631518043780](C:\Users\cyw\AppData\Roaming\Typora\typora-user-images\1631518043780.png)
+>
+> 本题较为细致地考察了阻塞赋值与非阻塞赋值的区别。
+>
+> 首先观察原有的代码，buffer模块中的always块采用了非阻塞赋值，而题目中强调了“外部需要保证in恰好在clk的每个上升沿变化”，那么正确的运行方式应当是：当clk上升沿的瞬间，in的值也发生改变，但在always块中参与运算的是旧的in值，即所谓的“本次不对always块中的<=的所有右值产生影响”。那么旧的in值给到buffer，旧的buffer的值给到out，以此out应当落后in两个时钟周期。
+>
+> 但上述正确运行过程的前提是，“本次不对always块中的<=的所有右值产生影响”，这一前提的保证是，外部的in变化与clk上升沿同时发生，而在原有的代码中，test bench中initial块的赋值都是阻塞赋值，在10ns时刻是clk的上升沿，同时是in信号的阻塞赋值变化，而阻塞赋值是要先于always块执行的，于是in的值先更新，在buffer模块的always块中in使用了新值，out只落后in一个时钟周期。
+>
+> 题目要求只修改test bench中的代码，那么将initial块中的阻塞赋值改为非阻塞即可，非阻塞赋值并不改变always块中的旧值，可以使out落后in两个时钟周期，而最少的修改只需要将in后来变化时的赋值方式修改即可，即第32、34、36行的阻塞赋值改为非阻塞赋值。
+
+A full understanding of why is not particularly useful for hardware design and requires a good understanding of how Verilog simulators keep track of events. Not following this rule results in extremely hard to find errors that are both non-deterministic and differ between simulation and synthesized hardware.*
 
 ![1630117892881](C:\Users\cyw\AppData\Roaming\Typora\typora-user-images\1630117892881.png)
 
@@ -253,6 +342,29 @@ endmodule
 
 ## Q9 运算符 与 for语句
 
+#### 运算符们
+
+- 逻辑右移运算符 `>>` 与算术右移运算符 `>>>`
+
+  它们的区别主要在于前者在最高位**补 0**，而后者在最高位**补符号位**。
+
+- 相等比较运算符 `==` 与 `===` 和 `!=` 与 `!==`
+
+  `==` 和 `!=` 可能由于不定值 `x` 和高阻值 `z` 的出现导致结果为**不定值 x**，而 `===` 和 `!==` 的结果一定是**确定的 0 或 1**（`x` 与 `z` 也参与比较）。
+
+- 阻塞赋值 `=` 和非阻塞赋值 `<=`
+
+  不同于 `assign` 语句，这两种赋值方式被称为过程赋值，通常出现在 `initial` 和 `always` 块中，**为 reg 型变量赋值**。这种赋值类似 C 语言中的赋值，不同于 `assign` 语句，赋值仅会在一个时刻执行。由于 Verilog 描述硬件的特性，Verilog程序内会有大量的并行，因而产生了这两种赋值方式。这两种赋值方式的详细区别我们会在之后的小节内介绍，这里暂时只需记住一点：为了写出正确、可综合的程序，**在描述时序逻辑时要使用非阻塞式赋值 <=** 。
+
+  *16’hf000 >> 4 = ？ 答案：16’h0f00*
+
+  ***$signed(16’hf000) >>> 4 = ？ 答案：16’hff00***
+
+  ***逻辑右移：高位补0即可；算术右移：在高位补符号位。***
+
+  ***注意上面算术右移的写法，Verilog中表示有符号数需要加 $signed()。***
+
+
 ### 一元  多位自我 运算符
 
 The *reduction* operators can do AND, OR, and XOR of the bits of a vector, producing one bit of output:
@@ -305,6 +417,14 @@ generate-for语句：
 **3、begin end块必须起个名字**
 
 在开始仿真前，仿真器会对生成块中代码进行确立展开，展开后的仿真代码中生成变量genvar不复存在。
+
+#### ==**for语句和while语句不可以直接出现在语句块之外。**==
+
+#### ==**for语句和while语句既可以用于建模组合逻辑，也可以用来建模时序逻辑。**==
+
+###### 时序逻辑 popcount
+
+![1631503243208](C:\Users\cyw\AppData\Roaming\Typora\typora-user-images\1631503243208.png)
 
 ------------------------------------------------
 
@@ -379,6 +499,78 @@ module top_module(
 
 endmodule
 ```
+
+### Q 11 quartusII综合报错（Error (10028): Can't resolve multiple constant drivers for net ）
+
+出现这个错误的原因在于，在不同的always逻辑块中，对同一个reg变量进行了赋值。
+
+在多个alwasy逻辑块同时并行工作的时候，会出现冲突。!==解决的办法就是，对于一个变量，只在一个always块中，进行赋值。==!
+
+### Q12 时间控制语句
+
+时间控制语句通常出现在测试模块中，用来产生符合我们期望变化的测试信号，比如每隔 5 个时间单位变更一次信号等。这个语句通过关键字 `#` 实现延时，格式为 **#时间**，当延时语句出现在顺序块中时它后面的语句会在延时完毕后继续执行。举例如下：
+
+#### ==# 先延迟 再执行==
+
+```verilog
+#3;  // 延迟 3 个时间单位
+#5 b = a;   
+// b 为 reg 型，延迟 5 个时间单位后执行赋值语句
+always #5 clk = ~clk;   
+// 每过 5 个时间单位触发一次，
+//时钟信号反转，时钟周期为 10 个时间单位
+assign #5 b = a; 
+//b 为 wire 型，将表达式右边的值延时 5 个时间单位后赋给 b
+```
+
+#### ==# 各模块的并行性==
+
+#### Q 13 有符号数的处理方法
+
+在 Verilog HDL 中，`wire`、`reg` 等数据类型**默认都是无符号的**。当你希望做符号数的操作时，你需要使用 **$signed()**。
+
+下面我们通过一个比较器的例子进行详细说明：
+
+![img](http://cscore.buaa.edu.cn/tutorial/verilog/verilog-3/assets/verilog-signed1.png)
+
+我们希望程序实现比较 a, b 大小的功能，若 a > b，res 输出 1，否则输出 0，下面进行测试。
+
+![img](http://cscore.buaa.edu.cn/tutorial/verilog/verilog-3/assets/verilog-signed2.png)
+
+我们初始化 a = 4，b = 1，100ns 后 b 变为 -1。期望的结果是 res 始终为 1。下面是波形：
+
+![img](http://cscore.buaa.edu.cn/tutorial/verilog/verilog-3/assets/verilog-signed3.png)
+
+可以看到 100ns 后，res 输出变为了 0，与预期不符。其原因在于比较时 Verilog 将 a 和 b 默认视为无符号数，-1 会被认为是 15(`4'b1111`)。
+
+将比较代码修改为 `assign res = $signed(a) > $signed(b);`，程序即可达到预期结果。
+
+值得一提的是，在对无符号数和符号数同时操作时，Verilog 会自动地做数据类型匹配，**将符号数向无符号数转化**。同样使用上面的例子，将代码修改为 `assign res = a > $signed(b);`，这样得到的结果仍然是错误的，因为在执行 `a > $signed(b)` 时，a 是无符号数，b 是符号数，Verilog 默认向无符号类型转化，得到的结果仍是无符号数的比较结果。
+
+此外，对于**移位运算符，其右侧的operand总是被视为无符号数(位移的位数总是一个正数)，并且不会对运算结果的符号性产生任何影响**。结果的符号由运算符左侧的operand和表达式的其余部分共同决定。
+
+希望大家可以通过编写测试代码并进行 ISE 仿真来掌握符号数的使用方法，这在后期 CPU 的功能实现过程中将有重要的作用。
+
+#### 负数以补码储存，却被当作无符号使用
+
+负数在存储时确实会以补码形式存储，但使用时仍然被当作无符号数。Verilog中想要使用有符号数必须添加$signed()
+
+#### Q14 宏定义的简单使用
+
+类似 C 语言，Verilog HDL 也提供了编译预处理指令。下面我们对其中的宏定义部分作一简要介绍。
+
+在 Verilog HDL 语言中，为了和一般的语句相区别，编译预处理命令**以符号 `（反引号，backtick）开头**（位于主键盘左上角，其对应的上键盘字符为 `~`。注意这个符号不同于单引号）。这些预处理命令的有效作用范围为定义命令之后到本文结束或到其他命令定义替代该命令之处。
+
+宏定义用一个指定的标识符(即名字)来代表一个字符串，它的一般形式为：``define 标识符(宏名) 字符串(宏内容)`。它的作用是指定用标识符来代替字符串，在编译预处理时，把程序中该命令以后所有的标识符都替换成字符串。举例如下：
+
+```verilog
+`define WORDSIZE 8
+// 省略模块定义
+ reg[1:`WORDSIZE] data;
+// 相当于定义 reg[1:8] data; 
+```
+
+注意，**引用宏名时也必须在宏名前加上符号 `**，以表明该名字是经过宏定义的名字。
 
 # BASIC module
 
@@ -735,4 +927,74 @@ endmodule;
 
 ![1630756482667](C:\Users\cyw\AppData\Roaming\Typora\typora-user-images\1630756482667.png)
 
-2.写出状态转移关系
+![1630759068731](C:\Users\cyw\AppData\Roaming\Typora\typora-user-images\1630759068731.png)
+
+2.写出状态转移关系 out = {fr1, fr2, fr3, dfr}
+
+#### 注意事项
+
+注意此处如果掉下去挖也没用， 
+
+##### 自动机的状态转移优先级要搞清楚
+
+```verilog
+module top_module(
+    input clk,
+    input areset,    // Freshly brainwashed Lemmings walk left.
+    input bump_left,
+    input bump_right,
+    input ground,
+    input dig,
+    output walk_left,
+    output walk_right,
+    output aaah,
+    output digging ); 
+    parameter WL = 0, WR = 1, DL = 2, DR = 3, FALL_L = 4, FALL_R = 5;
+    reg [3:0] state, next_state;
+    always @ (*) begin
+        case(state)
+            WL: 
+            begin 
+                if(ground == 0)  next_state = FALL_L;// 注意此处如果掉下去挖也没用， 自动机的状态转移优先级要搞清楚
+                else if(dig) next_state = DL; 
+                else if(bump_left) next_state = WR; 
+                else if(!bump_left) next_state = WL;
+            end
+            WR:
+            begin 
+                if(ground == 0) next_state = FALL_R;
+                else if(dig) next_state = DR; 
+                else if(bump_right) next_state = WL; 
+                else if(!bump_right) next_state = WR;
+            end
+            DL:
+            begin
+                if(ground == 1) next_state = DL;
+                else  next_state = FALL_L;
+            end
+            DR:
+            begin
+                if(ground == 1) next_state = DR;
+                else  next_state = FALL_R;
+            end
+            FALL_L: if(ground) next_state = WL;
+            else next_state = FALL_L;
+            FALL_R: if(ground) next_state = WR;
+            else next_state = FALL_R;
+            default: next_state = WL;
+        endcase
+    end
+    
+    always @ (posedge clk, posedge areset) begin
+        if(areset) state <= WL;
+        else state <= next_state ;
+    end
+
+    assign walk_left = (state == WL) ? 1 : 0;
+    assign walk_right = (state == WR) ? 1 : 0;
+    assign aaah = (state == FALL_R || state == FALL_L) ;
+    assign digging = (state == DR || state == DL) ;
+endmodule
+
+```
+
