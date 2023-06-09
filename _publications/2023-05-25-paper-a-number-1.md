@@ -4,9 +4,9 @@ collection: publications
 permalink: /publication/2023-05-25-paper-a-number-1
 # excerpt: ''
 date: 2023-05-25
-venue: ''
+venue: 'Submitted NeurIPS'
 # paperurl: 'http://academicpages.github.io/files/paper3.pdf'
-citation: 'Submitted NeurIPS'
+# citation: ''
 
 ---
 <!-- This paper is about the number 3. The number 4 is left for future work. -->
