@@ -81,12 +81,12 @@ analytics:
 # Site Author
 author:
   name             : "Yiwen Chen"
-  avatar           : "ict.png"
+  avatar           : "profile.png"
   bio              : "A student majoring in CS"
-  location         : "Location"
+  location         : "Beijing, China"
   employer         :
-  pubmed           : ""
-  googlescholar    : ""
+  pubmed           : #""
+  googlescholar    : #""
   email            :
   researchgate     :  # example: "https://www.researchgate.net/profile/yourprofile"
   uri              :
@@ -109,7 +109,7 @@ author:
   stackoverflow    : # http://stackoverflow.com/users/123456/username
   steam            :
   tumblr           :
-  twitter          : "replacethistwitterhandle"
+  twitter          : # "replacethistwitterhandle"
   vine             :
   weibo            :
   xing             :
